@@ -179,6 +179,13 @@ h2 {
   margin: 14px 0 0;
 }
 
+.dataset-warning {
+  margin: 14px 0 0;
+  color: var(--amber);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .status-stack {
   display: flex;
   flex-wrap: wrap;
@@ -415,4 +422,3 @@ h2 {
     grid-template-columns: 1fr;
   }
 }
-

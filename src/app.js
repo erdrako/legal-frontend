@@ -33,22 +33,60 @@ const approvedOverview = {
 };
 
 const state = {
-  overview: approvedOverview
+  overviews: [approvedOverview],
+  overview: approvedOverview,
+  dataset: {
+    mode: "DEV_STRUCTURAL",
+    disposable: true,
+    warning: "Dataset de desarrollo embebido. No usar como dato legal aprobado."
+  }
 };
 
 document.getElementById("search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const query = new FormData(event.currentTarget).get("q").toString().trim().toLowerCase();
-  const found = [approvedOverview.title, approvedOverview.summaryPlainLanguage, approvedOverview.type, approvedOverview.status]
-    .join(" ")
-    .toLowerCase()
-    .includes(query);
+  const found = state.overviews.find((overview) =>
+    [overview.title, overview.summaryPlainLanguage, overview.type, overview.status]
+      .join(" ")
+      .toLowerCase()
+      .includes(query)
+  );
 
-  state.overview = found || query.length === 0 ? approvedOverview : null;
+  state.overview = found || (query.length === 0 ? state.overviews[0] : null);
   render();
 });
 
-render();
+loadInitialData().then(render).catch((error) => {
+  console.warn(error);
+  render();
+});
+
+async function loadInitialData() {
+  const apiBase = new URLSearchParams(window.location.search).get("api");
+
+  if (!apiBase) {
+    return;
+  }
+
+  const [itemsResponse, datasetResponse] = await Promise.all([
+    fetch(`${apiBase.replace(/\/$/, "")}/legal-items`),
+    fetch(`${apiBase.replace(/\/$/, "")}/dataset/status`)
+  ]);
+
+  if (!itemsResponse.ok || !datasetResponse.ok) {
+    throw new Error("Backend API did not return usable data");
+  }
+
+  const itemsPayload = await itemsResponse.json();
+  const datasetPayload = await datasetResponse.json();
+
+  state.overviews = itemsPayload.items.map((item) => ({
+    ...item,
+    source: approvedOverview.source
+  }));
+  state.overview = state.overviews[0] ?? null;
+  state.dataset = datasetPayload;
+}
 
 function render() {
   if (!state.overview) {
@@ -71,6 +109,19 @@ function renderOverview(overview) {
   setText("freshness-status", `Freshness: ${overview.freshness.status}`);
   setText("sync-state", `Validado: ${formatDate(overview.freshness.lastValidatedAt)}`);
   setText("pending-count", String(overview.freshness.pendingValidationCount));
+  setText("dataset-warning", datasetWarningText());
+}
+
+function datasetWarningText() {
+  if (!state.dataset) {
+    return "";
+  }
+
+  if (state.dataset.mode === "DEV_STRUCTURAL") {
+    return state.dataset.warning ?? "Dataset de desarrollo descartable. No usar como aprobacion legal.";
+  }
+
+  return "";
 }
 
 function renderEffects(effects) {
@@ -141,6 +192,7 @@ function renderEmpty() {
   setText("legal-status", "Estado: sin dato");
   setText("freshness-status", "Freshness: sin dato");
   setText("sync-state", "Sin resultados");
+  setText("dataset-warning", datasetWarningText());
   setText("affected-count", "0 sujetos");
   setText("pending-count", "0");
   document.getElementById("effects-grid").innerHTML = "";
@@ -177,4 +229,3 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-

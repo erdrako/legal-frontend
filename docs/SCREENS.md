@@ -82,3 +82,10 @@ npm run check
 
 Esta version usa un approved overview embebido para validar estructura visual. La siguiente iteracion debe conectarla con `legal-backend`.
 
+Tambien puede consumir un backend local pasando `api` en la URL:
+
+```text
+http://localhost:4173?api=http://localhost:3000
+```
+
+Cuando el backend expone `dataset.mode = DEV_STRUCTURAL`, la UI muestra una advertencia visible de dataset descartable.
