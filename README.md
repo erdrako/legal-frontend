@@ -30,8 +30,8 @@ No puede:
 - [Principios UX](./docs/UX_PRINCIPLES.md)
 - [Pantallas iniciales](./docs/SCREENS.md)
 - [Estados visibles](./docs/VISIBLE_STATES.md)
+- [Integracion con contratos](./docs/CONTRACT_INTEGRATION.md)
 
 ## Principio de interfaz
 
 La UI debe ayudar a personas no especialistas a entender una norma, pero siempre debe permitir volver a la fuente legal original.
-
