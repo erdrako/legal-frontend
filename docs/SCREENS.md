@@ -60,3 +60,25 @@ Debe mostrar:
 - Doctrina vinculada.
 - Proyectos pendientes.
 
+## Pantalla inicial implementada
+
+El repositorio incluye una primera app estatica:
+
+```bash
+npm start
+```
+
+Por defecto se sirve en:
+
+```text
+http://localhost:4173
+```
+
+Checks locales:
+
+```bash
+npm run check
+```
+
+Esta version usa un approved overview embebido para validar estructura visual. La siguiente iteracion debe conectarla con `legal-backend`.
+

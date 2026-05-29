@@ -1,0 +1,12 @@
+{
+  "name": "@lexmapa/frontend",
+  "version": "0.1.0",
+  "description": "Frontend trazable para visualizar normativa argentina en LexMapa.",
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "start": "node scripts/serve-static.mjs",
+    "check": "node scripts/check-static-app.mjs"
+  }
+}
+
