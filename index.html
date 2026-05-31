@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LexMapa</title>
+    <title>LexMapa - Comparador legal</title>
     <link rel="stylesheet" href="./src/styles.css">
   </head>
   <body>
@@ -13,105 +13,114 @@
           <div class="brand-mark" aria-hidden="true">LM</div>
           <div>
             <p class="brand-name">LexMapa</p>
-            <p class="brand-subtitle">Normativa trazable</p>
+            <p class="brand-subtitle">Cambios legales claros</p>
           </div>
         </div>
 
         <nav class="nav-list" aria-label="Secciones">
-          <a class="nav-link active" href="#overview">Ficha</a>
-          <a class="nav-link" href="#relations">Relaciones</a>
-          <a class="nav-link" href="#timeline">Timeline</a>
-          <a class="nav-link" href="#sources">Fuentes</a>
+          <a class="nav-link active" href="#resumen">Resumen</a>
+          <a class="nav-link" href="#impacto">Impacto</a>
+          <a class="nav-link" href="#diffs">Comparacion</a>
+          <a class="nav-link" href="#fuentes">Fuentes</a>
         </nav>
       </aside>
 
       <section class="workspace">
-        <header class="topbar">
+        <header class="search-hero" id="resumen">
+          <div class="search-copy">
+            <p class="eyebrow">Comparador legal</p>
+            <h1>Que cambia con una reforma</h1>
+            <p class="hero-summary" id="proposal-short">Cargando comparacion...</p>
+          </div>
+
           <form class="search-form" id="search-form">
-            <label class="sr-only" for="search-input">Buscar</label>
-            <input id="search-input" name="q" autocomplete="off" placeholder="Buscar norma, tema o sujeto" value="ejemplo">
+            <label class="sr-only" for="search-input">Buscar una pregunta legal</label>
+            <input
+              id="search-input"
+              name="q"
+              autocomplete="off"
+              placeholder="Ej: que cambia con la reforma laboral"
+              value="que cambia con la reforma laboral"
+            >
             <button type="submit">Buscar</button>
           </form>
-          <div class="sync-state" id="sync-state">Datos aprobados</div>
+
+          <div class="query-row" id="query-examples"></div>
         </header>
 
-        <section class="hero-strip" id="overview">
+        <section class="summary-panel">
           <div>
-            <p class="eyebrow">Item legal</p>
-            <h1 id="item-title">Cargando...</h1>
-            <p class="summary" id="item-summary"></p>
-            <p class="dataset-warning" id="dataset-warning"></p>
+            <p class="eyebrow">Resultado principal</p>
+            <h2 id="proposal-title">Cargando...</h2>
+            <p class="summary-text" id="proposal-headline"></p>
           </div>
           <div class="status-stack">
-            <span class="status-pill" id="legal-status">Estado</span>
-            <span class="status-pill muted" id="freshness-status">Freshness</span>
+            <span class="status-pill" id="proposal-status">Estado</span>
+            <span class="status-pill muted" id="data-status">Dato</span>
           </div>
         </section>
 
-        <section class="content-grid">
+        <section class="content-grid" id="impacto">
           <section class="panel">
             <div class="panel-header">
-              <h2>Impacto actual</h2>
-              <span class="panel-note" id="affected-count">0 sujetos</span>
+              <h2>Temas afectados</h2>
+              <span class="panel-note" id="topic-count">0 temas</span>
             </div>
-            <div class="metric-grid" id="effects-grid"></div>
+            <div class="topic-list" id="topics-list"></div>
           </section>
 
           <section class="panel">
             <div class="panel-header">
-              <h2>Sujetos afectados</h2>
-              <span class="panel-note">Aprobado</span>
+              <h2>Grupos impactados</h2>
+              <span class="panel-note" id="group-count">0 grupos</span>
             </div>
-            <div class="tag-list" id="affected-subjects"></div>
+            <div class="group-list" id="groups-list"></div>
           </section>
         </section>
 
-        <section class="content-grid two-one" id="relations">
-          <section class="panel">
-            <div class="panel-header">
-              <h2>Relaciones</h2>
-              <span class="panel-note">Resumen</span>
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Resumen simple</h2>
+            <span class="panel-note">Lenguaje claro</span>
+          </div>
+          <div class="plain-grid">
+            <div>
+              <h3>Que cambia</h3>
+              <ul class="plain-list" id="key-points"></ul>
             </div>
-            <div class="relationship-map" id="relationship-map"></div>
-          </section>
+            <div>
+              <h3>Que significa</h3>
+              <ul class="plain-list" id="what-it-means"></ul>
+            </div>
+          </div>
+        </section>
 
+        <section class="diff-section" id="diffs">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Diff legal</p>
+              <h2>Texto actual vs texto propuesto</h2>
+            </div>
+            <span class="panel-note" id="diff-count">0 cambios</span>
+          </div>
+          <div class="diff-list" id="diff-list"></div>
+        </section>
+
+        <section class="content-grid" id="fuentes">
           <section class="panel">
             <div class="panel-header">
-              <h2>Confianza</h2>
+              <h2>Fuente y trazabilidad</h2>
               <span class="panel-note">Visible</span>
             </div>
-            <div class="trust-list">
-              <div>
-                <span>Revision</span>
-                <strong>Reviewed</strong>
-              </div>
-              <div>
-                <span>Origen</span>
-                <strong>Approved bundle</strong>
-              </div>
-              <div>
-                <span>Pendientes</span>
-                <strong id="pending-count">0</strong>
-              </div>
-            </div>
+            <div class="source-box" id="source-box"></div>
           </section>
-        </section>
 
-        <section class="content-grid" id="timeline">
           <section class="panel">
             <div class="panel-header">
-              <h2>Linea de tiempo</h2>
-              <span class="panel-note">Inicial</span>
+              <h2>Alcance</h2>
+              <span class="panel-note">MVP</span>
             </div>
-            <ol class="timeline-list" id="timeline-list"></ol>
-          </section>
-
-          <section class="panel" id="sources">
-            <div class="panel-header">
-              <h2>Fuente</h2>
-              <span class="panel-note">Verificable</span>
-            </div>
-            <div class="source-box" id="source-box"></div>
+            <div class="scope-box" id="scope-box"></div>
           </section>
         </section>
       </section>

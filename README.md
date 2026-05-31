@@ -4,11 +4,17 @@ Repositorio publico para la experiencia visual de LexMapa.
 
 ## Responsabilidad
 
-`legal-frontend` muestra datos legales aprobados de forma clara, navegable y trazable.
+`legal-frontend` muestra cambios legales de forma clara, navegable y trazable.
 
 Puede:
 
-- Buscar items legales.
+- Buscar preguntas legales en lenguaje simple.
+- Mostrar propuestas o reformas relevantes.
+- Comparar texto actual vs texto propuesto.
+- Explicar que cambia y que significa.
+- Mostrar temas afectados y grupos impactados.
+- Mostrar fuente, estado del dato y alcance.
+- Buscar items legales como soporte.
 - Mostrar fichas simples.
 - Mostrar vistas tecnicas.
 - Mostrar disposiciones.
@@ -34,4 +40,16 @@ No puede:
 
 ## Principio de interfaz
 
-La UI debe ayudar a personas no especialistas a entender una norma, pero siempre debe permitir volver a la fuente legal original.
+La UI debe ayudar a personas no especialistas a entender que cambia con una reforma, pero siempre debe permitir volver al texto legal original y a la fuente.
+
+## MVP actual
+
+La pantalla inicial esta orientada al caso:
+
+```text
+Que cambia con la reforma laboral
+```
+
+Incluye busqueda, resumen simple, temas afectados, grupos impactados, diff
+texto actual vs texto propuesto, explicacion practica y trazabilidad visible.
+El fixture embebido es manual y acotado; no representa asesoramiento legal.

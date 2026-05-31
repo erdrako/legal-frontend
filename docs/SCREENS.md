@@ -1,68 +1,63 @@
 # Pantallas iniciales
 
+## Pantalla principal MVP
+
+Caso guia:
+
+```text
+Que cambia con la reforma laboral
+```
+
+La primera pantalla no debe depender de numeros de ley, articulos o jerga
+juridica. Debe iniciar desde una pregunta simple y llevar a una comparacion
+legal clara.
+
+Secciones implementadas:
+
+- busqueda en lenguaje simple;
+- preguntas sugeridas;
+- resultado principal de propuesta/reforma;
+- resumen simple;
+- temas afectados;
+- grupos impactados;
+- diff texto actual vs texto propuesto;
+- explicacion `que cambia`;
+- explicacion `que significa`;
+- fuente, estado del dato, alcance y advertencia.
+
+## Reglas UX
+
+- El texto legal original debe estar siempre disponible.
+- La explicacion simple no reemplaza la fuente legal.
+- Fuente, estado y alcance se muestran en pantalla.
+- La herramienta no se presenta como asesoramiento legal personalizado.
+- El usuario no juridico debe entender el cambio sin navegar primero por una
+  ficha tecnica.
+
 ## Busqueda
 
-Permite buscar por:
+Preguntas esperadas para el MVP:
 
-- Titulo de norma.
-- Numero.
-- Concepto.
-- Tema.
-- Sujeto afectado.
+- `que cambia con la reforma laboral`
+- `que cambia para los trabajadores`
+- `que pasa con las indemnizaciones`
+- `que cambia en el periodo de prueba`
 
-## Ficha simple
+## Vista diff
 
-Debe mostrar:
+Cada cambio muestra:
 
-- Estado actual.
-- Resumen en lenguaje claro.
-- Sujetos afectados.
-- Obligaciones.
-- Prohibiciones.
-- Derechos.
-- Sanciones.
-- Relaciones principales.
-- Freshness.
+- titulo;
+- tipo de cambio: agregado, eliminado o modificado;
+- tema afectado;
+- grupo impactado;
+- texto actual;
+- texto propuesto;
+- explicacion simple;
+- impacto practico;
+- fuente y estado del dato.
 
-## Vista tecnica
-
-Debe mostrar:
-
-- Texto legal completo.
-- Articulos.
-- Incisos.
-- Fuentes.
-- Citas.
-- Relaciones.
-- Historial normativo.
-- Estado de revision.
-
-## Timeline
-
-Debe mostrar:
-
-- Fecha de sancion.
-- Publicacion.
-- Entrada en vigencia.
-- Modificaciones.
-- Derogaciones.
-- Reglamentaciones.
-- Proyectos pendientes.
-
-## Relaciones
-
-Debe mostrar:
-
-- Normas modificatorias.
-- Reglamentaciones.
-- Jurisprudencia seleccionada.
-- Criterios administrativos.
-- Doctrina vinculada.
-- Proyectos pendientes.
-
-## Pantalla inicial implementada
-
-El repositorio incluye una primera app estatica:
+## Ejecucion local
 
 ```bash
 npm start
@@ -80,15 +75,11 @@ Checks locales:
 npm run check
 ```
 
-Esta version usa un approved overview embebido para validar estructura visual. La siguiente iteracion debe conectarla con `legal-backend`.
-
-Tambien puede consumir un backend local pasando `api` en la URL:
+Puede consumir un backend local pasando `api` en la URL:
 
 ```text
 http://localhost:4173?api=http://localhost:3000
 ```
-
-Cuando el backend expone `dataset.mode = DEV_STRUCTURAL`, la UI muestra una advertencia visible de dataset descartable.
 
 Para produccion se puede generar o reemplazar:
 
