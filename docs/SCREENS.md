@@ -89,3 +89,17 @@ http://localhost:4173?api=http://localhost:3000
 ```
 
 Cuando el backend expone `dataset.mode = DEV_STRUCTURAL`, la UI muestra una advertencia visible de dataset descartable.
+
+Para produccion se puede generar o reemplazar:
+
+```text
+config.js
+```
+
+con:
+
+```js
+window.LEXMAPA_CONFIG = {
+  apiBaseUrl: "https://lexmapa-api.linqorait.com"
+};
+```

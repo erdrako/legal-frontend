@@ -62,7 +62,9 @@ loadInitialData().then(render).catch((error) => {
 });
 
 async function loadInitialData() {
-  const apiBase = new URLSearchParams(window.location.search).get("api");
+  const apiBase =
+    new URLSearchParams(window.location.search).get("api") ||
+    window.LEXMAPA_CONFIG?.apiBaseUrl;
 
   if (!apiBase) {
     return;

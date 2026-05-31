@@ -3,12 +3,15 @@ import { readFileSync } from "node:fs";
 const html = readFileSync("index.html", "utf8");
 const js = readFileSync("src/app.js", "utf8");
 const css = readFileSync("src/styles.css", "utf8");
+const config = readFileSync("config.js", "utf8");
 
 assert(html.includes("LexMapa"), "index.html must include product name");
 assert(html.includes("search-form"), "index.html must include search form");
+assert(html.includes("config.js"), "index.html must load runtime config");
 assert(js.includes("approvedOverview"), "app.js must include approved overview seed");
 assert(js.includes("loadInitialData"), "app.js must support API-backed data loading");
 assert(js.includes("DEV_STRUCTURAL"), "app.js must expose dev dataset state");
+assert(config.includes("LEXMAPA_CONFIG"), "config.js must define runtime config");
 assert(js.includes("renderRelationships"), "app.js must render relationships");
 assert(css.includes(".app-shell"), "styles.css must include app shell styles");
 assert(css.includes("@media"), "styles.css must include responsive rules");
