@@ -1,6 +1,6 @@
 # LexMapa UX Audit
 
-Generated: 2026-05-31T08:38:42.491Z
+Generated: 2026-05-31T08:39:01.997Z
 
 Target: legal-frontend
 

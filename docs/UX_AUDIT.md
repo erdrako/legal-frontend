@@ -3,6 +3,19 @@
 LexMapa incluye una auditoria UX reproducible para cuidar que el MVP siga
 orientado a personas no juridicas.
 
+La auditoria operativa vive en:
+
+```text
+UX audit/
+```
+
+Ese directorio contiene el runner automatico y las capturas:
+
+```text
+UX audit/run-ux-audit.ps1
+UX audit/ux-audit-screenshots/
+```
+
 La auditoria revisa heuristicas estaticas sobre:
 
 - busqueda en lenguaje simple;
@@ -24,17 +37,32 @@ Generar reporte:
 npm run audit:ux
 ```
 
+Ejecutar auditoria completa con screenshots:
+
+```bash
+npm run audit:ux:full
+```
+
 Validar sin escribir archivos:
 
 ```bash
 npm run audit:ux:check
 ```
 
-El reporte se escribe en:
+La auditoria estatica escribe en:
 
 ```text
 reports/ux-audit.latest.md
 reports/ux-audit.latest.json
+```
+
+La auditoria completa escribe en:
+
+```text
+UX audit/ux-audit.md
+UX audit/ux-audit.json
+UX audit/ux-audit-summary.md
+UX audit/ux-audit-screenshots/
 ```
 
 ## Regla de uso

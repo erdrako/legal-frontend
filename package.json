@@ -9,6 +9,7 @@
     "check": "node scripts/check-static-app.mjs && node scripts/audit-ux.mjs --check",
     "audit:ux": "node scripts/audit-ux.mjs",
     "audit:ux:check": "node scripts/audit-ux.mjs --check",
+    "audit:ux:full": "powershell -NoProfile -ExecutionPolicy Bypass -File \".\\UX audit\\run-ux-audit.ps1\"",
     "build:pages": "node scripts/build-pages.mjs"
   }
 }

@@ -60,10 +60,17 @@ El fixture embebido es manual y acotado; no representa asesoramiento legal.
 ```bash
 npm run audit:ux
 npm run audit:ux:check
+npm run audit:ux:full
 ```
 
 El check general tambien ejecuta la auditoria:
 
 ```bash
 npm run check
+```
+
+La auditoria completa deja evidencia en:
+
+```text
+UX audit/ux-audit-screenshots
 ```
