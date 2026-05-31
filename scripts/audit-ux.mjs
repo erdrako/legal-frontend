@@ -15,38 +15,67 @@ const files = {
 const checks = [];
 
 addCheck({
+  id: "home-six-sections",
+  area: "Information architecture",
+  severity: "critical",
+  pass: [
+    'id="buscar"',
+    'id="cambios-en-debate"',
+    'id="cambios-recientes"',
+    'id="temas"',
+    'id="normas"',
+    'id="como-leer"'
+  ].every((token) => files.html.includes(token)),
+  evidence: "Home is organized into hero, debate, recent, topics, norms and how-to-read sections.",
+  recommendation: "Keep the home structured by sections instead of shortcuts."
+});
+
+addCheck({
   id: "simple-language-search",
   area: "Discovery",
   severity: "critical",
   pass:
     files.html.includes("search-form") &&
-    files.html.includes("que cambia con la reforma laboral") &&
+    files.html.includes("Que cambia con la reforma laboral") &&
     files.js.includes("runSearch"),
   evidence: "Home exposes a natural-language search form for the MVP question.",
   recommendation: "Keep the first action centered on a plain-language question."
 });
 
 addCheck({
-  id: "suggested-questions",
+  id: "no-quick-access-chips",
   area: "Discovery",
+  severity: "critical",
+  pass: !files.html.includes("query-examples") && !files.html.includes("query-chip") && !files.js.includes("renderQueryExamples"),
+  evidence: "Home does not render quick-access chips below the search box.",
+  recommendation: "Organize discovery through sections, not highlighted shortcut chips."
+});
+
+addCheck({
+  id: "recent-empty-state",
+  area: "Information architecture",
   severity: "major",
-  pass: [
-    "que cambia con la reforma laboral",
-    "que cambia para los trabajadores",
-    "que pasa con las indemnizaciones",
-    "que cambia en el periodo de prueba"
-  ].every((query) => files.js.includes(query)),
-  evidence: "Suggested searches cover the expected MVP user intents.",
-  recommendation: "Add more suggestions only after observing real search language."
+  pass: files.js.includes("No hay cambios recientes cargados todavia"),
+  evidence: "Recent changes has an explicit empty state instead of invented data.",
+  recommendation: "Keep empty states honest while data is incomplete."
 });
 
 addCheck({
   id: "summary-before-legal-text",
   area: "Comprehension",
   severity: "critical",
-  pass: files.html.indexOf("proposal-short") > -1 && files.html.indexOf("proposal-short") < files.html.indexOf("diff-list"),
+  pass: files.html.indexOf("detail-summary") > -1 && files.html.indexOf("detail-summary") < files.html.indexOf("diff-list"),
   evidence: "The screen gives a plain summary before the article-by-article diff.",
   recommendation: "Do not lead with dense legal text."
+});
+
+addCheck({
+  id: "important-norms-secondary",
+  area: "Information architecture",
+  severity: "major",
+  pass: files.html.includes("Consulta de base, no flujo principal") && files.css.includes(".quiet-section"),
+  evidence: "Important norms is visually marked as reference, not the main product flow.",
+  recommendation: "Keep norms below debate/recent changes and visually quieter."
 });
 
 addCheck({
@@ -79,7 +108,7 @@ addCheck({
   id: "plain-explanation-per-change",
   area: "Comprehension",
   severity: "critical",
-  pass: files.js.includes("Que cambia") && files.js.includes("Que significa") && files.js.includes("practicalImpact"),
+  pass: files.js.includes("Explicacion simple") && files.js.includes("Interpretacion orientativa") && files.js.includes("practicalImpact"),
   evidence: "Every diff renders what changes and what it means.",
   recommendation: "Do not collapse practical impact into technical legal labels."
 });
@@ -89,12 +118,34 @@ addCheck({
   area: "Trust",
   severity: "critical",
   pass:
-    files.html.includes("source-box") &&
-    files.html.includes("scope-box") &&
+    files.html.includes("proposal-sources") &&
+    files.js.includes("originalSources") &&
+    files.js.includes("sourceStatus") &&
     files.js.includes("dataStatus") &&
     files.js.includes("legalAdviceWarning"),
   evidence: "Source, data status, scope and legal warning are rendered.",
   recommendation: "Keep trust metadata visible without requiring a technical view."
+});
+
+addCheck({
+  id: "diff-original-sources",
+  area: "Trust",
+  severity: "critical",
+  pass:
+    files.js.includes("currentVersion.originalSource") &&
+    files.js.includes("proposedVersion.originalSource") &&
+    files.js.includes("Fuentes de este cambio"),
+  evidence: "Each diff renders sources for current and proposed versions.",
+  recommendation: "Every diff must expose both original source states."
+});
+
+addCheck({
+  id: "pending-source-visible",
+  area: "Trust",
+  severity: "critical",
+  pass: files.js.includes("Fuente original pendiente de carga"),
+  evidence: "Missing original links are explicit and visible.",
+  recommendation: "Never hide or invent missing original source links."
 });
 
 addCheck({
@@ -119,6 +170,17 @@ addCheck({
     countMatches(files.html, /<h1[>\s]/g) === 1,
   evidence: "The static page has language, landmarks, hidden labels and one H1.",
   recommendation: "Keep labels and document structure explicit as the UI grows."
+});
+
+addCheck({
+  id: "brief-how-to-read",
+  area: "Comprehension",
+  severity: "major",
+  pass:
+    ["Antes", "Despues", "Que cambia", "Que significa"].every((label) => files.html.includes(label)) &&
+    files.html.includes("No reemplaza asesoramiento legal profesional"),
+  evidence: "How-to-read section is brief and uses the four expected concepts.",
+  recommendation: "Keep the explanation short, visual and useful."
 });
 
 addCheck({

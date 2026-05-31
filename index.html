@@ -3,125 +3,189 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LexMapa - Comparador legal</title>
+    <title>LexMapa - Cambios legales claros</title>
     <link rel="stylesheet" href="./src/styles.css">
   </head>
   <body>
-    <main class="app-shell">
-      <aside class="sidebar" aria-label="Navegacion principal">
-        <div class="brand-block">
-          <div class="brand-mark" aria-hidden="true">LM</div>
+    <header class="top-nav">
+      <a class="brand-link" href="#buscar" aria-label="LexMapa inicio">
+        <span class="brand-mark" aria-hidden="true">LM</span>
+        <span>LexMapa</span>
+      </a>
+      <nav class="nav-list" aria-label="Navegacion principal">
+        <a href="#cambios-en-debate">Cambios en debate</a>
+        <a href="#cambios-recientes">Cambios recientes</a>
+        <a href="#temas">Temas</a>
+        <a href="#normas">Normas</a>
+        <a href="#buscar">Buscar</a>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <section class="hero-section" id="buscar">
+        <div class="hero-copy">
+          <p class="eyebrow">Comprension legal simple</p>
+          <h1>Entende que cambia en la ley, sin lenguaje juridico.</h1>
+          <p>
+            No necesitas saber de leyes. Busca que cambio queres entender y LexMapa te muestra que cambia, a quien afecta y donde esta la fuente original.
+          </p>
+        </div>
+
+        <form class="search-form" id="search-form">
+          <label class="sr-only" for="search-input">Buscar una pregunta legal</label>
+          <input
+            id="search-input"
+            name="q"
+            autocomplete="off"
+            placeholder="Ej: Que cambia con la reforma laboral?"
+            value="que cambia con la reforma laboral"
+          >
+          <button type="submit">Buscar</button>
+        </form>
+        <p class="search-note">Busca por tema, reforma, ley o pregunta cotidiana. No necesitas numero de ley, expediente ni articulo.</p>
+      </section>
+
+      <section class="home-section priority-section" id="cambios-en-debate">
+        <div class="section-heading">
           <div>
-            <p class="brand-name">LexMapa</p>
-            <p class="brand-subtitle">Cambios legales claros</p>
+            <p class="eyebrow">Reformas y proyectos</p>
+            <h2>Cambios en debate</h2>
+          </div>
+          <span class="section-note" id="debate-count">0 cargados</span>
+        </div>
+        <div class="proposal-grid" id="debate-list"></div>
+      </section>
+
+      <section class="home-section" id="cambios-recientes">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Aprobados o publicados</p>
+            <h2>Cambios recientes</h2>
+          </div>
+          <span class="section-note">No compite con proyectos en debate</span>
+        </div>
+        <div class="recent-list" id="recent-list"></div>
+      </section>
+
+      <section class="home-section" id="temas">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Entrada por problemas reales</p>
+            <h2>Explorar por tema</h2>
+          </div>
+        </div>
+        <div class="topic-catalog" id="topic-catalog"></div>
+      </section>
+
+      <section class="home-section quiet-section" id="normas">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Referencia</p>
+            <h2>Normas importantes</h2>
+          </div>
+          <span class="section-note">Consulta de base, no flujo principal</span>
+        </div>
+        <div class="norm-list" id="norm-list"></div>
+      </section>
+
+      <section class="home-section how-section" id="como-leer">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Diff legal</p>
+            <h2>Como leer LexMapa</h2>
+          </div>
+        </div>
+        <div class="how-grid">
+          <article>
+            <span>1</span>
+            <strong>Antes</strong>
+            <p>El texto vigente o la situacion actual.</p>
+          </article>
+          <article>
+            <span>2</span>
+            <strong>Despues</strong>
+            <p>El texto propuesto o modificado.</p>
+          </article>
+          <article>
+            <span>3</span>
+            <strong>Que cambia</strong>
+            <p>Lo agregado, eliminado o reemplazado.</p>
+          </article>
+          <article>
+            <span>4</span>
+            <strong>Que significa</strong>
+            <p>Una explicacion simple del impacto practico.</p>
+          </article>
+        </div>
+        <p class="disclaimer">LexMapa ofrece informacion orientativa y comparaciones para facilitar la comprension de cambios legales. No reemplaza asesoramiento legal profesional. Verifica siempre el texto oficial en las fuentes originales.</p>
+      </section>
+
+      <section class="detail-shell" id="detalle">
+        <div class="detail-header">
+          <div>
+            <p class="eyebrow">Detalle de cambio legal</p>
+            <h2 id="detail-title">Cargando propuesta...</h2>
+            <p id="detail-summary"></p>
+          </div>
+          <div class="status-stack">
+            <span class="status-pill" id="detail-status">Estado</span>
+            <span class="status-pill muted" id="detail-type">Tipo</span>
+            <span class="status-pill muted" id="detail-updated">Actualizacion</span>
           </div>
         </div>
 
-        <nav class="nav-list" aria-label="Secciones">
-          <a class="nav-link active" href="#resumen">Resumen</a>
-          <a class="nav-link" href="#impacto">Impacto</a>
-          <a class="nav-link" href="#diffs">Comparacion</a>
-          <a class="nav-link" href="#fuentes">Fuentes</a>
-        </nav>
-      </aside>
-
-      <section class="workspace">
-        <header class="search-hero" id="resumen">
-          <div class="search-copy">
-            <p class="eyebrow">Comparador legal</p>
-            <h1>Que cambia con una reforma</h1>
-            <p class="hero-summary" id="proposal-short">Cargando comparacion...</p>
-          </div>
-
-          <form class="search-form" id="search-form">
-            <label class="sr-only" for="search-input">Buscar una pregunta legal</label>
-            <input
-              id="search-input"
-              name="q"
-              autocomplete="off"
-              placeholder="Ej: que cambia con la reforma laboral"
-              value="que cambia con la reforma laboral"
-            >
-            <button type="submit">Buscar</button>
-          </form>
-
-          <div class="query-row" id="query-examples"></div>
-        </header>
-
-        <section class="summary-panel">
-          <div>
-            <p class="eyebrow">Resultado principal</p>
-            <h2 id="proposal-title">Cargando...</h2>
-            <p class="summary-text" id="proposal-headline"></p>
-          </div>
-          <div class="status-stack">
-            <span class="status-pill" id="proposal-status">Estado</span>
-            <span class="status-pill muted" id="data-status">Dato</span>
-          </div>
-        </section>
-
-        <section class="content-grid" id="impacto">
+        <div class="detail-grid">
           <section class="panel">
             <div class="panel-header">
-              <h2>Temas afectados</h2>
+              <h3>Resumen simple</h3>
+              <span class="panel-note">No tecnico</span>
+            </div>
+            <ul class="plain-list" id="detail-key-points"></ul>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Fuentes originales</h3>
+              <span class="panel-note">Transparencia</span>
+            </div>
+            <div class="source-links" id="proposal-sources"></div>
+          </section>
+        </div>
+
+        <div class="detail-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Temas afectados</h3>
               <span class="panel-note" id="topic-count">0 temas</span>
             </div>
-            <div class="topic-list" id="topics-list"></div>
+            <div class="impact-list" id="topics-list"></div>
           </section>
 
           <section class="panel">
             <div class="panel-header">
-              <h2>Grupos impactados</h2>
+              <h3>Grupos impactados</h3>
               <span class="panel-note" id="group-count">0 grupos</span>
             </div>
-            <div class="group-list" id="groups-list"></div>
+            <div class="impact-list" id="groups-list"></div>
           </section>
-        </section>
+        </div>
 
         <section class="panel">
           <div class="panel-header">
-            <h2>Resumen simple</h2>
-            <span class="panel-note">Lenguaje claro</span>
+            <h3>Cambios principales</h3>
+            <span class="panel-note" id="diff-count">0 cambios</span>
           </div>
-          <div class="plain-grid">
-            <div>
-              <h3>Que cambia</h3>
-              <ul class="plain-list" id="key-points"></ul>
-            </div>
-            <div>
-              <h3>Que significa</h3>
-              <ul class="plain-list" id="what-it-means"></ul>
-            </div>
-          </div>
+          <ol class="main-changes" id="main-changes"></ol>
         </section>
 
         <section class="diff-section" id="diffs">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">Diff legal</p>
-              <h2>Texto actual vs texto propuesto</h2>
+              <p class="eyebrow">Comparacion articulo por articulo</p>
+              <h2>Texto vigente vs texto propuesto</h2>
             </div>
-            <span class="panel-note" id="diff-count">0 cambios</span>
           </div>
           <div class="diff-list" id="diff-list"></div>
-        </section>
-
-        <section class="content-grid" id="fuentes">
-          <section class="panel">
-            <div class="panel-header">
-              <h2>Fuente y trazabilidad</h2>
-              <span class="panel-note">Visible</span>
-            </div>
-            <div class="source-box" id="source-box"></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <h2>Alcance</h2>
-              <span class="panel-note">MVP</span>
-            </div>
-            <div class="scope-box" id="scope-box"></div>
-          </section>
         </section>
       </section>
     </main>

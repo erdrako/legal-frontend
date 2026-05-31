@@ -55,6 +55,17 @@ Incluye busqueda, resumen simple, temas afectados, grupos impactados, diff
 texto actual vs texto propuesto, explicacion practica y trazabilidad visible.
 El fixture embebido es manual y acotado; no representa asesoramiento legal.
 
+La home esta organizada por secciones:
+
+- Hero con buscador en lenguaje simple.
+- Cambios en debate.
+- Cambios recientes.
+- Explorar por tema.
+- Normas importantes.
+- Como leer LexMapa.
+
+Por ahora no usa accesos rapidos/chips debajo del buscador.
+
 ## Auditoria UX
 
 ```bash

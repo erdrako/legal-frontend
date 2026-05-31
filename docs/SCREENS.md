@@ -14,25 +14,26 @@ legal clara.
 
 Secciones implementadas:
 
-- busqueda en lenguaje simple;
-- preguntas sugeridas;
-- resultado principal de propuesta/reforma;
-- resumen simple;
-- temas afectados;
-- grupos impactados;
-- diff texto actual vs texto propuesto;
-- explicacion `que cambia`;
-- explicacion `que significa`;
-- fuente, estado del dato, alcance y advertencia.
+- hero con buscador en lenguaje simple;
+- cambios en debate;
+- cambios recientes;
+- explorar por tema;
+- normas importantes;
+- como leer LexMapa;
+- detalle de propuesta/reforma;
+- comparacion texto vigente vs texto propuesto;
+- fuentes originales de la propuesta y de cada diff.
 
 ## Reglas UX
 
 - El texto legal original debe estar siempre disponible.
 - La explicacion simple no reemplaza la fuente legal.
-- Fuente, estado y alcance se muestran en pantalla.
+- Fuente vigente, fuente propuesta, estado y alcance se muestran en pantalla.
+- Si falta una fuente original, se muestra `Fuente original pendiente de carga`.
 - La herramienta no se presenta como asesoramiento legal personalizado.
 - El usuario no juridico debe entender el cambio sin navegar primero por una
   ficha tecnica.
+- No hay accesos rapidos/chips destacados debajo del buscador en esta etapa.
 
 ## Busqueda
 
@@ -56,6 +57,9 @@ Cada cambio muestra:
 - explicacion simple;
 - impacto practico;
 - fuente y estado del dato.
+- fuente vigente original;
+- fuente propuesta original;
+- estado de fuente: `LOADED` o `PENDING`.
 
 ## Ejecucion local
 

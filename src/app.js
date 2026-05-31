@@ -1,3 +1,9 @@
+const PENDING_SOURCE_TEXT = "Fuente original pendiente de carga";
+
+if (new URLSearchParams(window.location.search).get("capture") === "diff") {
+  document.documentElement.classList.add("capture-diff");
+}
+
 const fixtureSource = {
   id: "fixture-reforma-laboral-mvp",
   name: "Fixture manual LexMapa",
@@ -6,7 +12,15 @@ const fixtureSource = {
   official: false
 };
 
-function version(id, label, legalItemTitle, provisionLabel, text, status) {
+function pendingOriginalSource(label) {
+  return {
+    status: "PENDING",
+    label,
+    note: PENDING_SOURCE_TEXT
+  };
+}
+
+function version(id, label, legalItemTitle, provisionLabel, text, status, originalLabel) {
   return {
     id,
     label,
@@ -14,7 +28,9 @@ function version(id, label, legalItemTitle, provisionLabel, text, status) {
     provisionLabel,
     text,
     status,
-    source: fixtureSource
+    source: fixtureSource,
+    sourceStatus: "PENDING",
+    originalSource: pendingOriginalSource(originalLabel)
   };
 }
 
@@ -28,11 +44,12 @@ function diff(id, title, changeType, topicIds, groupIds, currentText, proposedTe
     affectedGroupIds: groupIds,
     currentVersion: version(
       `${id}-actual`,
-      "Texto actual",
+      "Texto vigente",
       "Regimen laboral vigente - ejemplo",
       "Regla actual de ejemplo",
       currentText,
-      "VIGENTE"
+      "VIGENTE",
+      "Texto vigente original"
     ),
     proposedVersion: version(
       `${id}-propuesto`,
@@ -40,7 +57,8 @@ function diff(id, title, changeType, topicIds, groupIds, currentText, proposedTe
       "Reforma laboral - ejemplo",
       "Regla propuesta de ejemplo",
       proposedText,
-      "PROPOSED"
+      "PROPOSED",
+      "Texto propuesto original"
     ),
     explanationPlainLanguage: explanation,
     practicalImpact: impact,
@@ -57,6 +75,7 @@ const fallbackProposal = {
   id: "reforma-laboral-mvp-2026",
   title: "Reforma laboral - ejemplo acotado para MVP",
   status: "IN_DEBATE",
+  typeOfChange: "Reforma propuesta",
   summary: {
     headline: "Que cambia con la reforma laboral",
     short: "Comparacion manual y acotada para probar LexMapa como un Git diff de leyes explicado en lenguaje simple.",
@@ -68,9 +87,9 @@ const fallbackProposal = {
       "Incorpora una figura de colaboradores independientes para casos pequenos."
     ],
     whatItMeans: [
-      "La pantalla muestra texto actual y texto propuesto lado a lado.",
+      "La pantalla muestra texto vigente y texto propuesto lado a lado.",
       "Cada cambio explica que cambia y que significa en la practica.",
-      "La fuente, el estado y el alcance del dato quedan visibles."
+      "La fuente original de cada version queda visible o marcada como pendiente."
     ],
     limitations: [
       "Fixture manual de desarrollo.",
@@ -198,16 +217,72 @@ const fallbackProposal = {
     "que cambia en el periodo de prueba"
   ],
   source: fixtureSource,
+  originalSources: {
+    current: pendingOriginalSource("Texto vigente original"),
+    proposed: pendingOriginalSource("Texto propuesto original")
+  },
   dataStatus: "MANUAL_FIXTURE",
+  updatedAt: "2026-05-31T00:00:00.000Z",
   scopeNote: "MVP de experiencia. Usa textos ficticios/acotados para demostrar comparacion legal y trazabilidad.",
   legalAdviceWarning: "LexMapa no brinda asesoramiento legal personalizado. Verifique siempre la fuente legal aplicable."
 };
+
+const recentChanges = [];
+
+const topicCatalog = [
+  {
+    label: "Trabajo",
+    description: "Reformas laborales, despidos, indemnizaciones, periodo de prueba y registracion laboral."
+  },
+  {
+    label: "Consumidores",
+    description: "Derechos al comprar, reclamos, garantias, informacion clara y trato digno."
+  },
+  {
+    label: "Alquileres",
+    description: "Contratos, plazos, actualizaciones, garantias y reglas de vivienda."
+  },
+  {
+    label: "Impuestos y monotributo",
+    description: "Cambios tributarios, categorias, obligaciones y regimenes simplificados."
+  },
+  {
+    label: "Jubilaciones",
+    description: "Movilidad, aportes, edad jubilatoria, beneficios y tramites previsionales."
+  },
+  {
+    label: "Empresas e inversiones",
+    description: "Reglas para sociedades, incentivos, contratacion, inversiones y actividad economica."
+  }
+];
+
+const importantNorms = [
+  {
+    title: "Constitucion Nacional",
+    description: "Derechos, garantias y organizacion del Estado.",
+    topics: ["Derechos", "Poderes del Estado", "Garantias"]
+  },
+  {
+    title: "Ley de Contrato de Trabajo",
+    description: "Reglas base para relaciones laborales, derechos y obligaciones.",
+    topics: ["Trabajo", "Despidos", "Registracion"]
+  },
+  {
+    title: "Ley de Defensa del Consumidor",
+    description: "Proteccion para personas que compran bienes o contratan servicios.",
+    topics: ["Consumidores", "Garantias", "Reclamos"]
+  },
+  {
+    title: "Codigo Civil y Comercial",
+    description: "Reglas centrales sobre contratos, familia, bienes, responsabilidad y derechos civiles.",
+    topics: ["Contratos", "Familia", "Propiedad"]
+  }
+];
 
 const state = {
   apiBase: apiBaseFromRuntime(),
   proposals: [toOverview(fallbackProposal)],
   proposal: fallbackProposal,
-  query: "que cambia con la reforma laboral",
   dataset: null,
   error: null
 };
@@ -218,16 +293,14 @@ document.getElementById("search-form").addEventListener("submit", (event) => {
   runSearch(query);
 });
 
-document.getElementById("query-examples").addEventListener("click", (event) => {
-  const button = event.target.closest("[data-query]");
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-open-proposal]");
 
   if (!button) {
     return;
   }
 
-  const query = button.dataset.query;
-  document.getElementById("search-input").value = query;
-  runSearch(query);
+  openProposal(button.dataset.openProposal);
 });
 
 loadInitialData().then(render).catch((error) => {
@@ -261,17 +334,17 @@ async function loadInitialData() {
 }
 
 async function runSearch(query) {
-  state.query = query;
-
   if (!query) {
     state.proposal = fallbackProposal;
     render();
+    scrollToDetail();
     return;
   }
 
   if (!state.apiBase) {
     state.proposal = localProposalMatches(query) ? fallbackProposal : null;
     render();
+    scrollToDetail();
     return;
   }
 
@@ -289,6 +362,7 @@ async function runSearch(query) {
     if (payload.proposals.length === 0) {
       state.proposal = null;
       render();
+      scrollToDetail();
       return;
     }
 
@@ -303,6 +377,13 @@ async function runSearch(query) {
   }
 
   render();
+  scrollToDetail();
+}
+
+async function openProposal(id) {
+  await loadProposalDetail(id);
+  render();
+  scrollToDetail();
 }
 
 async function loadProposalDetail(id) {
@@ -321,38 +402,142 @@ async function loadProposalDetail(id) {
 }
 
 function render() {
-  renderQueryExamples();
+  renderDebateSection();
+  renderRecentSection();
+  renderTopicCatalog();
+  renderImportantNorms();
 
   if (!state.proposal) {
-    renderEmpty();
+    renderEmptyDetail();
+    maybeScrollForCapture();
     return;
   }
 
-  const proposal = state.proposal;
+  renderDetail(state.proposal);
+  maybeScrollForCapture();
+}
 
-  setText("proposal-short", proposal.summary.short);
-  setText("proposal-title", proposal.title);
-  setText("proposal-headline", proposal.summary.headline);
-  setText("proposal-status", `Estado: ${formatStatus(proposal.status)}`);
-  setText("data-status", `Dato: ${formatStatus(proposal.dataStatus)}`);
+function renderDebateSection() {
+  const proposals = state.proposals.length > 0 ? state.proposals : [toOverview(fallbackProposal)];
+  setText("debate-count", `${proposals.length} cargado${proposals.length === 1 ? "" : "s"}`);
+
+  document.getElementById("debate-list").innerHTML = proposals
+    .map((proposal) => {
+      const topics = proposal.affectedTopics ?? [];
+      const groups = proposal.affectedGroups ?? [];
+      const sourceName = proposal.source?.name ?? "Fuente no cargada";
+
+      return `
+        <article class="proposal-card">
+          <div class="card-topline">
+            <span class="status-pill">${formatStatus(proposal.status)}</span>
+            <span class="small-muted">${escapeHtml(sourceName)}</span>
+          </div>
+          <h3>${escapeHtml(proposal.title)}</h3>
+          <p>${escapeHtml(proposal.summaryPlainLanguage)}</p>
+          <div class="mini-list">
+            <strong>Temas afectados</strong>
+            <span>${topics.length > 0 ? escapeHtml(topics.join(", ")) : "Sin temas cargados"}</span>
+          </div>
+          <div class="mini-list">
+            <strong>Grupos afectados</strong>
+            <span>${groups.length > 0 ? escapeHtml(groups.join(", ")) : "Sin grupos cargados"}</span>
+          </div>
+          <button class="primary-action" type="button" data-open-proposal="${escapeHtml(proposal.id)}">Entender cambios</button>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderRecentSection() {
+  const container = document.getElementById("recent-list");
+
+  if (recentChanges.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>No hay cambios recientes cargados todavia</strong>
+        <p>Cuando haya normas aprobadas o publicadas, apareceran aca con acceso a la comparacion antes/despues.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = recentChanges
+    .map(
+      (change) => `
+        <article class="recent-card">
+          <h3>${escapeHtml(change.title)}</h3>
+          <p>${escapeHtml(change.summary)}</p>
+          <button class="secondary-action" type="button" data-open-proposal="${escapeHtml(change.proposalId)}">Ver antes y despues</button>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderTopicCatalog() {
+  document.getElementById("topic-catalog").innerHTML = topicCatalog
+    .map(
+      (topic) => `
+        <article class="topic-card">
+          <h3>${escapeHtml(topic.label)}</h3>
+          <p>${escapeHtml(topic.description)}</p>
+          <span>Explorar tema</span>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderImportantNorms() {
+  document.getElementById("norm-list").innerHTML = importantNorms
+    .map(
+      (norm) => `
+        <article class="norm-item">
+          <div>
+            <h3>${escapeHtml(norm.title)}</h3>
+            <p>${escapeHtml(norm.description)}</p>
+          </div>
+          <span>${escapeHtml(norm.topics.join(" / "))}</span>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderDetail(proposal) {
+  setText("detail-title", proposal.title);
+  setText("detail-summary", proposal.summary.short);
+  setText("detail-status", `Estado: ${formatStatus(proposal.status)}`);
+  setText("detail-type", `Tipo: ${proposal.typeOfChange ?? "Cambio legal"}`);
+  setText("detail-updated", `Actualizado: ${formatDate(proposal.updatedAt)}`);
   setText("topic-count", `${proposal.topics.length} temas`);
   setText("group-count", `${proposal.affectedGroups.length} grupos`);
   setText("diff-count", `${proposal.diffs.length} cambios`);
 
+  renderList("detail-key-points", proposal.summary.keyPoints);
+  renderProposalSources(proposal);
   renderTopics(proposal.topics);
   renderGroups(proposal.affectedGroups);
-  renderList("key-points", proposal.summary.keyPoints);
-  renderList("what-it-means", proposal.summary.whatItMeans);
+  renderList("main-changes", proposal.summary.keyPoints);
   renderDiffs(proposal);
-  renderSource(proposal);
-  renderScope(proposal);
 }
 
-function renderQueryExamples() {
-  const examples = state.proposal?.queryExamples ?? fallbackProposal.queryExamples;
-  document.getElementById("query-examples").innerHTML = examples
-    .map((query) => `<button class="query-chip" type="button" data-query="${escapeHtml(query)}">${escapeHtml(query)}</button>`)
-    .join("");
+function renderProposalSources(proposal) {
+  const sources = proposal.originalSources ?? {
+    current: pendingOriginalSource("Texto vigente original"),
+    proposed: pendingOriginalSource("Texto propuesto original")
+  };
+
+  document.getElementById("proposal-sources").innerHTML = `
+    ${renderOriginalSource(sources.current, "Ver texto vigente original")}
+    ${renderOriginalSource(sources.proposed, "Ver texto propuesto original")}
+    <div class="source-context">
+      <span>Fuente principal</span>
+      <strong>${escapeHtml(proposal.source?.name ?? "Sin fuente principal")}</strong>
+    </div>
+  `;
 }
 
 function renderTopics(topics) {
@@ -405,6 +590,8 @@ function renderDiffs(proposal) {
           </div>
 
           <div class="meta-row">
+            <span>${escapeHtml(item.currentVersion.legalItemTitle ?? "Norma afectada pendiente")}</span>
+            <span>${escapeHtml(item.currentVersion.provisionLabel ?? "Articulo pendiente")}</span>
             ${topics.map((topic) => `<span>${escapeHtml(topic)}</span>`).join("")}
             ${groups.map((group) => `<span>${escapeHtml(group)}</span>`).join("")}
           </div>
@@ -427,74 +614,63 @@ function renderDiffs(proposal) {
             </section>
           </div>
 
-          <div class="explanation-grid">
+          <div class="trust-split">
             <div>
-              <span>Que cambia</span>
+              <span>Explicacion simple</span>
               <p>${escapeHtml(item.explanationPlainLanguage)}</p>
             </div>
             <div>
-              <span>Que significa</span>
+              <span>Interpretacion orientativa</span>
               <p>${escapeHtml(item.practicalImpact)}</p>
             </div>
           </div>
 
-          <footer class="diff-source">
-            <span>Fuente: ${escapeHtml(item.source.name)}</span>
-            <span>Estado: ${formatStatus(item.dataStatus)}</span>
-            <span>Impacto: ${formatStatus(item.impactLevel)}</span>
-          </footer>
+          <div class="diff-sources">
+            <strong>Fuentes de este cambio</strong>
+            <div class="source-links">
+              ${renderOriginalSource(item.currentVersion.originalSource, "Ver texto vigente original")}
+              ${renderOriginalSource(item.proposedVersion.originalSource, "Ver texto propuesto original")}
+            </div>
+          </div>
         </article>
       `;
     })
     .join("");
 }
 
-function renderSource(proposal) {
-  const source = proposal.source;
-  const url = source.sourceUrl ?? "#";
-  document.getElementById("source-box").innerHTML = `
-    <div class="source-line">
-      <span>Fuente</span>
-      <strong>${escapeHtml(source.name)}</strong>
+function renderOriginalSource(source, label) {
+  if (source?.status === "LOADED" && source.sourceUrl) {
+    return `
+      <a class="source-link loaded" href="${escapeHtml(source.sourceUrl)}" target="_blank" rel="noreferrer">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(source.name ?? source.label ?? "Fuente original")}</strong>
+      </a>
+    `;
+  }
+
+  return `
+    <div class="source-link pending">
+      <span>${escapeHtml(label)}</span>
+      <strong>${PENDING_SOURCE_TEXT}</strong>
     </div>
-    <div class="source-line">
-      <span>Oficial</span>
-      <strong>${source.official ? "Si" : "No"}</strong>
-    </div>
-    <div class="source-line">
-      <span>Recuperado</span>
-      <strong>${formatDate(source.retrievedAt)}</strong>
-    </div>
-    <a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a>
   `;
 }
 
-function renderScope(proposal) {
-  const dataset = state.dataset?.mode ? `Dataset: ${state.dataset.mode}.` : "Dataset: fixture local.";
-  document.getElementById("scope-box").innerHTML = `
-    <p>${escapeHtml(proposal.scopeNote ?? "Comparacion acotada para MVP.")}</p>
-    <p>${escapeHtml(proposal.legalAdviceWarning)}</p>
-    <p>${escapeHtml(dataset)} ${state.error ? escapeHtml(state.error) : ""}</p>
-  `;
-}
-
-function renderEmpty() {
-  setText("proposal-short", "No encontramos una comparacion para esa pregunta en el fixture actual.");
-  setText("proposal-title", "Sin resultados");
-  setText("proposal-headline", "Proba con reforma laboral, trabajadores, indemnizaciones o periodo de prueba.");
-  setText("proposal-status", "Estado: sin dato");
-  setText("data-status", "Dato: sin dato");
+function renderEmptyDetail() {
+  setText("detail-title", "Sin resultados");
+  setText("detail-summary", "No encontramos un cambio legal cargado para esa busqueda.");
+  setText("detail-status", "Estado: sin dato");
+  setText("detail-type", "Tipo: sin dato");
+  setText("detail-updated", "Actualizado: sin dato");
   setText("topic-count", "0 temas");
   setText("group-count", "0 grupos");
   setText("diff-count", "0 cambios");
-
+  document.getElementById("detail-key-points").innerHTML = "";
+  document.getElementById("proposal-sources").innerHTML = `<div class="source-link pending"><strong>${PENDING_SOURCE_TEXT}</strong></div>`;
   document.getElementById("topics-list").innerHTML = "";
   document.getElementById("groups-list").innerHTML = "";
-  document.getElementById("key-points").innerHTML = "";
-  document.getElementById("what-it-means").innerHTML = "";
+  document.getElementById("main-changes").innerHTML = "";
   document.getElementById("diff-list").innerHTML = "";
-  document.getElementById("source-box").innerHTML = "";
-  document.getElementById("scope-box").innerHTML = state.error ? `<p>${escapeHtml(state.error)}</p>` : "";
 }
 
 function localProposalMatches(query) {
@@ -534,6 +710,22 @@ function toOverview(proposal) {
     dataStatus: proposal.dataStatus,
     source: proposal.source
   };
+}
+
+function scrollToDetail() {
+  document.getElementById("detalle").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function maybeScrollForCapture() {
+  const target = new URLSearchParams(window.location.search).get("capture");
+
+  if (target !== "diff") {
+    return;
+  }
+
+  window.setTimeout(() => {
+    document.getElementById("diffs")?.scrollIntoView({ block: "start" });
+  }, 100);
 }
 
 function apiBaseFromRuntime() {
