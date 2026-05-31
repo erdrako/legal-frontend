@@ -16,6 +16,7 @@ assert(html.includes("Como leer LexMapa"), "index.html must include how-to-read 
 assert(html.includes("search-answer-panel"), "index.html must include contextual search answer panel");
 assert(html.includes("Texto vigente vs texto propuesto"), "index.html must expose legal diff section");
 assert(js.includes("fallbackProposal"), "app.js must include change proposal seed");
+assert(js.includes("fallbackProposals"), "app.js must include imported agenda proposals");
 assert(js.includes("loadInitialData"), "app.js must support API-backed data loading");
 assert(js.includes("change-proposals"), "app.js must load change proposals from API");
 assert(js.includes("renderDiffs"), "app.js must render legal diffs");
@@ -25,13 +26,22 @@ assert(js.includes('timeZone: "UTC"'), "app.js must avoid timezone drift for leg
 assert(js.includes("legalAdviceWarning"), "app.js must show legal advice warning");
 assert(js.includes("Fuente original pendiente de carga"), "app.js must show missing original source state");
 assert(js.includes("originalSource"), "app.js must render original sources");
+assert(js.includes("REAL_AGENDA_ITEM"), "app.js must use real agenda fixture state");
+assert(js.includes("ley-hojarasca"), "app.js must include imported Ley Hojarasca agenda item");
+assert(js.includes("super-rigi"), "app.js must include imported Super RIGI agenda item");
+assert(js.includes("transparencia-gestion-intereses"), "app.js must include imported transparency agenda item");
+assert(js.includes("biocombustibles"), "app.js must include imported biocombustibles agenda item");
+assert(js.includes("officialAgendaSourceUrl"), "app.js must expose official agenda source URLs");
+assert(js.includes("Comparacion articulo por articulo pendiente de carga"), "app.js must show pending diff state");
+assert(html.includes("agenda-meta"), "index.html must include agenda metadata panel");
+assert(!js.includes("reforma-laboral-mvp-2026"), "app.js must not expose the old test proposal");
 assert(!html.includes("query-examples"), "index.html must not include quick-access query chips");
 assert(config.includes("LEXMAPA_CONFIG"), "config.js must define runtime config");
-assert(js.includes("MANUAL_FIXTURE"), "app.js must expose fixture data state");
 assert(css.includes(".workspace"), "styles.css must include workspace styles");
 assert(css.includes(".legal-compare"), "styles.css must include side-by-side diff styles");
 assert(css.includes(".matched-diff"), "styles.css must highlight query-matched diffs");
 assert(css.includes(".capture-search"), "styles.css must support contextual search screenshots");
+assert(css.includes(".agenda-meta"), "styles.css must style agenda metadata");
 assert(css.includes("@media"), "styles.css must include responsive rules");
 
 console.log("Static app checks passed.");

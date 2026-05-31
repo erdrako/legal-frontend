@@ -5,7 +5,7 @@
 Caso guia:
 
 ```text
-Que cambia con la reforma laboral
+Que se trata sobre Ley Hojarasca
 ```
 
 La primera pantalla no debe depender de numeros de ley, articulos o jerga
@@ -21,7 +21,8 @@ Secciones implementadas:
 - normas importantes;
 - como leer LexMapa;
 - detalle de propuesta/reforma;
-- comparacion texto vigente vs texto propuesto;
+- datos de agenda: camara, fecha de tratamiento y comisiones;
+- comparacion texto vigente vs texto propuesto cuando esta cargada;
 - fuentes originales de la propuesta y de cada diff;
 - respuesta contextual cuando la busqueda coincide con temas, grupos o diffs
   concretos.
@@ -32,6 +33,8 @@ Secciones implementadas:
 - La explicacion simple no reemplaza la fuente legal.
 - Fuente vigente, fuente propuesta, estado y alcance se muestran en pantalla.
 - Si falta una fuente original, se muestra `Fuente original pendiente de carga`.
+- Si falta texto vigente/propuesto, se muestra
+  `Comparacion articulo por articulo pendiente de carga`.
 - La herramienta no se presenta como asesoramiento legal personalizado.
 - El usuario no juridico debe entender el cambio sin navegar primero por una
   ficha tecnica.
@@ -43,18 +46,21 @@ Secciones implementadas:
 
 Preguntas esperadas para el MVP:
 
-- `que cambia con la reforma laboral`
-- `que cambia para los trabajadores`
-- `que pasa con las indemnizaciones`
-- `que cambia en el periodo de prueba`
+- `hojarasca`
+- `super rigi`
+- `transparencia`
+- `biocombustibles`
+- `pesca ilegal`
+- `seguridad social`
+- `doble imposicion`
 
 Cuando una busqueda coincide con un tema, grupo impactado o diff especifico, la
-vista debe mostrar una respuesta breve y resaltar los cambios relacionados.
+vista debe mostrar una respuesta breve y orientar a la propuesta relacionada.
 Tambien puede abrirse una busqueda desde URL usando `?q=`.
 
 ## Vista diff
 
-Cada cambio muestra:
+Cuando los textos estan cargados, cada cambio muestra:
 
 - titulo;
 - tipo de cambio: agregado, eliminado o modificado;
@@ -68,6 +74,9 @@ Cada cambio muestra:
 - fuente vigente original;
 - fuente propuesta original;
 - estado de fuente: `LOADED` o `PENDING`.
+
+Cuando los textos todavia no estan cargados, la seccion muestra un estado
+pendiente profesional y no inventa contenido legal.
 
 ## Ejecucion local
 

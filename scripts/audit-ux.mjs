@@ -36,9 +36,9 @@ addCheck({
   severity: "critical",
   pass:
     files.html.includes("search-form") &&
-    files.html.includes("Que cambia con la reforma laboral") &&
+    files.html.includes("Que se trata sobre Ley Hojarasca") &&
     files.js.includes("runSearch"),
-  evidence: "Home exposes a natural-language search form for the MVP question.",
+  evidence: "Home exposes a natural-language search form for real agenda items.",
   recommendation: "Keep the first action centered on a plain-language question."
 });
 
@@ -59,11 +59,27 @@ addCheck({
     files.html.includes("search-answer-panel") &&
     files.js.includes("matchedDiffIds") &&
     files.js.includes("initialQueryFromUrl") &&
-    files.js.includes("Coincide con tu busqueda") &&
+    files.js.includes("Encontramos un proyecto en debate") &&
     files.css.includes(".matched-diff") &&
     files.css.includes(".capture-search"),
-  evidence: "Search results can explain why a proposal matched, support shareable query URLs and highlight relevant diffs.",
+  evidence: "Search results can explain why a proposal matched and support shareable query URLs.",
   recommendation: "Keep natural-language search connected to concrete changes, not only proposal titles."
+});
+
+addCheck({
+  id: "real-agenda-items",
+  area: "Data trust",
+  severity: "critical",
+  pass:
+    files.js.includes("REAL_AGENDA_ITEM") &&
+    files.js.includes("ley-hojarasca") &&
+    files.js.includes("super-rigi") &&
+    files.js.includes("transparencia-gestion-intereses") &&
+    files.js.includes("biocombustibles") &&
+    files.js.includes("officialAgendaSourceUrl") &&
+    !files.js.includes("reforma-laboral-mvp-2026"),
+  evidence: "The productive UI seed uses official agenda items and no longer exposes the old fictional fixture.",
+  recommendation: "Keep test/demo data out of the user-facing home."
 });
 
 addCheck({
@@ -143,6 +159,21 @@ addCheck({
 });
 
 addCheck({
+  id: "agenda-source-links",
+  area: "Trust",
+  severity: "critical",
+  pass:
+    files.html.includes("agenda-meta") &&
+    files.js.includes("renderAgendaMeta") &&
+    files.js.includes("officialAgendaSourceUrl") &&
+    files.js.includes("officialCitationUrl") &&
+    files.js.includes("currentLawOriginalUrl") &&
+    files.js.includes("proposedTextOriginalUrl"),
+  evidence: "Agenda metadata and original source link fields are visible in the detail flow.",
+  recommendation: "Keep agenda/citation/original text source states separate."
+});
+
+addCheck({
   id: "stable-legal-dates",
   area: "Trust",
   severity: "major",
@@ -170,6 +201,17 @@ addCheck({
   pass: files.js.includes("Fuente original pendiente de carga"),
   evidence: "Missing original links are explicit and visible.",
   recommendation: "Never hide or invent missing original source links."
+});
+
+addCheck({
+  id: "pending-diff-visible",
+  area: "Trust",
+  severity: "critical",
+  pass:
+    files.js.includes("Comparacion articulo por articulo pendiente de carga") &&
+    files.js.includes("LexMapa no inventa diffs legales"),
+  evidence: "The UI has an explicit empty state for proposals without loaded legal texts.",
+  recommendation: "Do not show article-level comparisons until source texts are loaded."
 });
 
 addCheck({

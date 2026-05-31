@@ -10,7 +10,7 @@ Puede:
 
 - Buscar preguntas legales en lenguaje simple.
 - Mostrar propuestas o reformas relevantes.
-- Comparar texto actual vs texto propuesto.
+- Comparar texto actual vs texto propuesto cuando esa comparacion esta cargada.
 - Explicar que cambia y que significa.
 - Mostrar temas afectados y grupos impactados.
 - Mostrar fuente, estado del dato y alcance.
@@ -45,17 +45,27 @@ La UI debe ayudar a personas no especialistas a entender que cambia con una refo
 
 ## MVP actual
 
-La pantalla inicial esta orientada al caso:
+La pantalla inicial esta orientada a items reales proximos a tratarse en el
+Congreso argentino:
 
 ```text
-Que cambia con la reforma laboral
+hojarasca
+super rigi
+transparencia
+biocombustibles
 ```
 
-Incluye busqueda, resumen simple, temas afectados, grupos impactados, diff
-texto actual vs texto propuesto, explicacion practica y trazabilidad visible.
-El fixture embebido es manual y acotado; no representa asesoramiento legal.
+Incluye busqueda, resumen simple, camara, fecha de tratamiento, comisiones,
+temas afectados, grupos impactados, fuentes oficiales y trazabilidad visible.
+El fixture embebido es manual, real y acotado a agendas oficiales; no representa
+asesoramiento legal.
+
+Si una propuesta todavia no tiene textos vigente/propuesto cargados, la vista
+muestra `Comparacion articulo por articulo pendiente de carga` y mantiene
+visibles las fuentes originales pendientes.
+
 Cuando la busqueda coincide con un tema, grupo o cambio concreto, la pantalla
-muestra una respuesta breve y resalta los diffs relacionados.
+muestra una respuesta breve y orienta hacia la propuesta correspondiente.
 
 La home esta organizada por secciones:
 
