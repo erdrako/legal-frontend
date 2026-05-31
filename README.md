@@ -72,5 +72,5 @@ npm run check
 La auditoria completa deja evidencia en:
 
 ```text
-UX audit/ux-audit-screenshots
+../UX audit/ux-audit-screenshots
 ```

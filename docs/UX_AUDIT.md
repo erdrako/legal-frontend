@@ -3,17 +3,18 @@
 LexMapa incluye una auditoria UX reproducible para cuidar que el MVP siga
 orientado a personas no juridicas.
 
-La auditoria operativa vive en:
+La auditoria operativa vive fuera de este repo versionado, en el directorio raiz
+del proyecto LexMapa:
 
 ```text
-UX audit/
+../UX audit/
 ```
 
 Ese directorio contiene el runner automatico y las capturas:
 
 ```text
-UX audit/run-ux-audit.ps1
-UX audit/ux-audit-screenshots/
+../UX audit/run-ux-audit.ps1
+../UX audit/ux-audit-screenshots/
 ```
 
 La auditoria revisa heuristicas estaticas sobre:
@@ -59,10 +60,10 @@ reports/ux-audit.latest.json
 La auditoria completa escribe en:
 
 ```text
-UX audit/ux-audit.md
-UX audit/ux-audit.json
-UX audit/ux-audit-summary.md
-UX audit/ux-audit-screenshots/
+../UX audit/ux-audit.md
+../UX audit/ux-audit.json
+../UX audit/ux-audit-summary.md
+../UX audit/ux-audit-screenshots/
 ```
 
 ## Regla de uso
