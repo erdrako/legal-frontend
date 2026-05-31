@@ -6,7 +6,9 @@
   "private": false,
   "scripts": {
     "start": "node scripts/serve-static.mjs",
-    "check": "node scripts/check-static-app.mjs"
+    "check": "node scripts/check-static-app.mjs && node scripts/audit-ux.mjs --check",
+    "audit:ux": "node scripts/audit-ux.mjs",
+    "audit:ux:check": "node scripts/audit-ux.mjs --check",
+    "build:pages": "node scripts/build-pages.mjs"
   }
 }
-

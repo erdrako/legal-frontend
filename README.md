@@ -34,6 +34,7 @@ No puede:
 ## Documentacion
 
 - [Principios UX](./docs/UX_PRINCIPLES.md)
+- [Auditoria UX](./docs/UX_AUDIT.md)
 - [Pantallas iniciales](./docs/SCREENS.md)
 - [Estados visibles](./docs/VISIBLE_STATES.md)
 - [Integracion con contratos](./docs/CONTRACT_INTEGRATION.md)
@@ -53,3 +54,16 @@ Que cambia con la reforma laboral
 Incluye busqueda, resumen simple, temas afectados, grupos impactados, diff
 texto actual vs texto propuesto, explicacion practica y trazabilidad visible.
 El fixture embebido es manual y acotado; no representa asesoramiento legal.
+
+## Auditoria UX
+
+```bash
+npm run audit:ux
+npm run audit:ux:check
+```
+
+El check general tambien ejecuta la auditoria:
+
+```bash
+npm run check
+```

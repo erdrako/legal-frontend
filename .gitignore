@@ -2,8 +2,8 @@ node_modules/
 dist/
 build/
 coverage/
+.wrangler/
 .env
 .env.*
 !.env.example
 *.log
-

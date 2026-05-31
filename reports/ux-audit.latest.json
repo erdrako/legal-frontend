@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-05-31T06:31:57.196Z",
+  "target": "legal-frontend",
+  "score": 100,
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "simple-language-search",
+      "area": "Discovery",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Home exposes a natural-language search form for the MVP question.",
+      "recommendation": "Keep the first action centered on a plain-language question."
+    },
+    {
+      "id": "suggested-questions",
+      "area": "Discovery",
+      "severity": "major",
+      "pass": true,
+      "evidence": "Suggested searches cover the expected MVP user intents.",
+      "recommendation": "Add more suggestions only after observing real search language."
+    },
+    {
+      "id": "summary-before-legal-text",
+      "area": "Comprehension",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The screen gives a plain summary before the article-by-article diff.",
+      "recommendation": "Do not lead with dense legal text."
+    },
+    {
+      "id": "affected-topics-and-groups",
+      "area": "Impact",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The UI separates affected topics from impacted groups.",
+      "recommendation": "Keep topics and groups visible before detailed legal comparison."
+    },
+    {
+      "id": "side-by-side-diff",
+      "area": "Comparison",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Each change has current and proposed text in separate blocks.",
+      "recommendation": "Preserve access to both legal texts in every diff item."
+    },
+    {
+      "id": "plain-explanation-per-change",
+      "area": "Comprehension",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Every diff renders what changes and what it means.",
+      "recommendation": "Do not collapse practical impact into technical legal labels."
+    },
+    {
+      "id": "source-status-scope",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Source, data status, scope and legal warning are rendered.",
+      "recommendation": "Keep trust metadata visible without requiring a technical view."
+    },
+    {
+      "id": "no-personalized-legal-advice",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The interface warns that it is not personalized legal advice.",
+      "recommendation": "Avoid imperative advice for a user's individual situation."
+    },
+    {
+      "id": "accessibility-basics",
+      "area": "Accessibility",
+      "severity": "major",
+      "pass": true,
+      "evidence": "The static page has language, landmarks, hidden labels and one H1.",
+      "recommendation": "Keep labels and document structure explicit as the UI grows."
+    },
+    {
+      "id": "responsive-layout",
+      "area": "Responsive",
+      "severity": "major",
+      "pass": true,
+      "evidence": "CSS defines responsive breakpoints and collapses the diff layout.",
+      "recommendation": "Verify real mobile screenshots before production announcements."
+    },
+    {
+      "id": "stable-readable-type",
+      "area": "Visual",
+      "severity": "major",
+      "pass": true,
+      "evidence": "Typography avoids negative letter spacing and viewport-scaled font sizes.",
+      "recommendation": "Use fixed/rem sizes and responsive containers instead of viewport font scaling."
+    },
+    {
+      "id": "no-external-runtime-assets",
+      "area": "Reliability",
+      "severity": "minor",
+      "pass": true,
+      "evidence": "The static shell does not depend on third-party runtime assets.",
+      "recommendation": "Keep the MVP shell self-contained for Cloudflare Pages."
+    }
+  ]
+}
