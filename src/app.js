@@ -1,7 +1,8 @@
 const PENDING_SOURCE_TEXT = "Fuente original pendiente de carga";
+const captureTarget = new URLSearchParams(window.location.search).get("capture");
 
-if (new URLSearchParams(window.location.search).get("capture") === "diff") {
-  document.documentElement.classList.add("capture-diff");
+if (captureTarget === "diff" || captureTarget === "search") {
+  document.documentElement.classList.add(`capture-${captureTarget}`);
 }
 
 const fixtureSource = {
@@ -284,7 +285,8 @@ const state = {
   proposals: [toOverview(fallbackProposal)],
   proposal: fallbackProposal,
   dataset: null,
-  error: null
+  error: null,
+  searchContext: null
 };
 
 document.getElementById("search-form").addEventListener("submit", (event) => {
@@ -303,11 +305,25 @@ document.addEventListener("click", (event) => {
   openProposal(button.dataset.openProposal);
 });
 
-loadInitialData().then(render).catch((error) => {
-  console.warn(error);
-  state.error = "No se pudo conectar con la API. Se muestra el fixture local.";
-  render();
-});
+const initialQuery = initialQueryFromUrl();
+
+if (initialQuery) {
+  document.getElementById("search-input").value = initialQuery;
+}
+
+loadInitialData()
+  .then(() => {
+    if (initialQuery) {
+      return runSearch(initialQuery);
+    }
+
+    render();
+  })
+  .catch((error) => {
+    console.warn(error);
+    state.error = "No se pudo conectar con la API. Se muestra el fixture local.";
+    render();
+  });
 
 async function loadInitialData() {
   if (!state.apiBase) {
@@ -336,15 +352,18 @@ async function loadInitialData() {
 async function runSearch(query) {
   if (!query) {
     state.proposal = fallbackProposal;
+    state.searchContext = null;
     render();
     scrollToDetail();
     return;
   }
 
   if (!state.apiBase) {
-    state.proposal = localProposalMatches(query) ? fallbackProposal : null;
+    const localSearchResult = buildLocalSearchResult(query, fallbackProposal);
+    state.proposal = localSearchResult ? fallbackProposal : null;
+    state.searchContext = localSearchResult ? buildSearchContext(query, localSearchResult, fallbackProposal) : null;
     render();
-    scrollToDetail();
+    scrollToRelevantResult();
     return;
   }
 
@@ -361,27 +380,33 @@ async function runSearch(query) {
 
     if (payload.proposals.length === 0) {
       state.proposal = null;
+      state.searchContext = null;
       render();
       scrollToDetail();
       return;
     }
 
-    await loadProposalDetail(payload.proposals[0].id);
+    const firstResult = payload.proposals[0];
+    await loadProposalDetail(firstResult.id);
+    state.searchContext = buildSearchContext(query, firstResult, state.proposal);
     state.error = payload.itemsUnavailable?.error
       ? "La busqueda normativa esta limitada por el estado del dataset, pero la comparacion MVP esta disponible."
       : null;
   } catch (error) {
     console.warn(error);
     state.error = "No se pudo completar la busqueda remota. Se muestra el fixture local.";
-    state.proposal = localProposalMatches(query) ? fallbackProposal : null;
+    const localSearchResult = buildLocalSearchResult(query, fallbackProposal);
+    state.proposal = localSearchResult ? fallbackProposal : null;
+    state.searchContext = localSearchResult ? buildSearchContext(query, localSearchResult, fallbackProposal) : null;
   }
 
   render();
-  scrollToDetail();
+  scrollToRelevantResult();
 }
 
 async function openProposal(id) {
   await loadProposalDetail(id);
+  state.searchContext = null;
   render();
   scrollToDetail();
 }
@@ -516,12 +541,29 @@ function renderDetail(proposal) {
   setText("group-count", `${proposal.affectedGroups.length} grupos`);
   setText("diff-count", `${proposal.diffs.length} cambios`);
 
+  renderSearchAnswer(proposal);
   renderList("detail-key-points", proposal.summary.keyPoints);
   renderProposalSources(proposal);
   renderTopics(proposal.topics);
   renderGroups(proposal.affectedGroups);
   renderList("main-changes", proposal.summary.keyPoints);
   renderDiffs(proposal);
+}
+
+function renderSearchAnswer(proposal) {
+  const panel = document.getElementById("search-answer-panel");
+  const context = state.searchContext;
+
+  if (!context || context.proposalId !== proposal.id) {
+    panel.hidden = true;
+    setText("search-answer-query", "");
+    setText("search-answer-text", "");
+    return;
+  }
+
+  panel.hidden = false;
+  setText("search-answer-query", context.query);
+  setText("search-answer-text", context.matchSummary);
 }
 
 function renderProposalSources(proposal) {
@@ -573,20 +615,27 @@ function renderList(id, values) {
 function renderDiffs(proposal) {
   const topicById = new Map(proposal.topics.map((topic) => [topic.id, topic.label]));
   const groupById = new Map(proposal.affectedGroups.map((group) => [group.id, group.label]));
+  const matchedDiffIds = new Set(
+    state.searchContext?.proposalId === proposal.id ? state.searchContext.matchedDiffIds : []
+  );
 
   document.getElementById("diff-list").innerHTML = proposal.diffs
     .map((item, index) => {
       const topics = item.affectedTopicIds.map((id) => topicById.get(id) ?? id);
       const groups = item.affectedGroupIds.map((id) => groupById.get(id) ?? id);
+      const isMatched = matchedDiffIds.has(item.id);
 
       return `
-        <article class="diff-card">
+        <article class="diff-card${isMatched ? " matched-diff" : ""}" id="diff-${escapeHtml(item.id)}">
           <div class="diff-heading">
             <div>
               <span class="diff-index">Cambio ${index + 1}</span>
               <h3>${escapeHtml(item.title)}</h3>
             </div>
-            <span class="change-badge ${item.changeType.toLowerCase()}">${formatChangeType(item.changeType)}</span>
+            <div class="badge-row">
+              ${isMatched ? '<span class="match-pill">Coincide con tu busqueda</span>' : ""}
+              <span class="change-badge ${item.changeType.toLowerCase()}">${formatChangeType(item.changeType)}</span>
+            </div>
           </div>
 
           <div class="meta-row">
@@ -662,6 +711,9 @@ function renderEmptyDetail() {
   setText("detail-status", "Estado: sin dato");
   setText("detail-type", "Tipo: sin dato");
   setText("detail-updated", "Actualizado: sin dato");
+  document.getElementById("search-answer-panel").hidden = true;
+  setText("search-answer-query", "");
+  setText("search-answer-text", "");
   setText("topic-count", "0 temas");
   setText("group-count", "0 grupos");
   setText("diff-count", "0 cambios");
@@ -671,10 +723,6 @@ function renderEmptyDetail() {
   document.getElementById("groups-list").innerHTML = "";
   document.getElementById("main-changes").innerHTML = "";
   document.getElementById("diff-list").innerHTML = "";
-}
-
-function localProposalMatches(query) {
-  return normalize(searchableText(fallbackProposal)).includes(normalize(query));
 }
 
 function searchableText(proposal) {
@@ -698,6 +746,150 @@ function searchableText(proposal) {
   ].join(" ");
 }
 
+function buildLocalSearchResult(query, proposal) {
+  const normalizedQuery = normalize(query);
+  const terms = queryTerms(query);
+  const proposalText = normalize(searchableText(proposal));
+  const matchesProposal =
+    (normalizedQuery && proposalText.includes(normalizedQuery)) ||
+    terms.some((term) => textIncludesTerm(proposalText, term));
+
+  if (!matchesProposal) {
+    return null;
+  }
+
+  const focusedTerms = terms.filter((term) => !GENERIC_PROPOSAL_TERMS.has(term));
+  const matchedTopicIds = proposal.topics
+    .filter((topic) => textMatchesTerms([topic.label, topic.summaryPlainLanguage].join(" "), focusedTerms))
+    .map((topic) => topic.id);
+  const matchedGroupIds = proposal.affectedGroups
+    .filter((group) => textMatchesTerms(group.label, focusedTerms))
+    .map((group) => group.id);
+  const directDiffIds = proposal.diffs
+    .filter((item) =>
+      textMatchesTerms(
+        [
+          item.title,
+          item.changeType,
+          item.explanationPlainLanguage,
+          item.practicalImpact,
+          item.currentVersion.text,
+          item.proposedVersion.text
+        ].join(" "),
+        focusedTerms
+      )
+    )
+    .map((item) => item.id);
+  const matchedDiffIds = unique([
+    ...directDiffIds,
+    ...proposal.diffs
+      .filter((item) => item.affectedTopicIds.some((id) => matchedTopicIds.includes(id)))
+      .map((item) => item.id),
+    ...proposal.diffs
+      .filter((item) => item.affectedGroupIds.some((id) => matchedGroupIds.includes(id)))
+      .map((item) => item.id)
+  ]);
+
+  return {
+    ...toOverview(proposal),
+    matchedDiffIds,
+    matchedTopicIds,
+    matchedGroupIds,
+    matchSummary: searchMatchSummary({
+      matchedDiffCount: matchedDiffIds.length,
+      topicLabels: proposal.topics.filter((topic) => matchedTopicIds.includes(topic.id)).map((topic) => topic.label),
+      groupLabels: proposal.affectedGroups.filter((group) => matchedGroupIds.includes(group.id)).map((group) => group.label)
+    })
+  };
+}
+
+function buildSearchContext(query, result, proposal) {
+  const fallbackResult = result.matchedDiffIds ? result : buildLocalSearchResult(query, proposal);
+
+  return {
+    proposalId: proposal.id,
+    query,
+    matchedDiffIds: fallbackResult?.matchedDiffIds ?? [],
+    matchedTopicIds: fallbackResult?.matchedTopicIds ?? [],
+    matchedGroupIds: fallbackResult?.matchedGroupIds ?? [],
+    matchSummary:
+      fallbackResult?.matchSummary ??
+      "Encontramos una propuesta relacionada con tu busqueda. Revisa el resumen y las fuentes originales."
+  };
+}
+
+function searchMatchSummary({ matchedDiffCount, topicLabels, groupLabels }) {
+  if (topicLabels.length > 0 && groupLabels.length > 0) {
+    return `Encontramos ${formatCount(matchedDiffCount, "cambio")} ${matchedDiffCount === 1 ? "relacionado" : "relacionados"} con ${joinLabels(topicLabels)} y con ${joinLabels(groupLabels)}.`;
+  }
+
+  if (topicLabels.length > 0) {
+    return `Encontramos ${formatCount(matchedDiffCount, "cambio")} sobre ${joinLabels(topicLabels)}.`;
+  }
+
+  if (groupLabels.length > 0) {
+    return `Encontramos ${formatCount(matchedDiffCount, "cambio")} que ${matchedDiffCount === 1 ? "impacta" : "impactan"} a ${joinLabels(groupLabels)}.`;
+  }
+
+  if (matchedDiffCount > 0) {
+    return `Encontramos ${formatCount(matchedDiffCount, "cambio")} directamente relacionado con tu busqueda.`;
+  }
+
+  return "Encontramos una propuesta relacionada con tu busqueda. Revisa el resumen y las fuentes originales.";
+}
+
+function formatCount(count, singular) {
+  return count === 1 ? `1 ${singular}` : `${count} ${singular}s`;
+}
+
+function joinLabels(labels) {
+  if (labels.length <= 1) {
+    return labels[0] ?? "";
+  }
+
+  return `${labels.slice(0, -1).join(", ")} y ${labels.at(-1)}`;
+}
+
+function textMatchesTerms(text, terms) {
+  const normalizedText = normalize(text);
+  return terms.some((term) => textIncludesTerm(normalizedText, term));
+}
+
+function textIncludesTerm(normalizedText, term) {
+  return termVariants(term).some((variant) => normalizedText.includes(variant));
+}
+
+function queryTerms(query) {
+  return unique(
+    normalize(query)
+      .split(/[^a-z0-9]+/g)
+      .map((term) => term.trim())
+      .filter((term) => term.length > 2 && !STOP_WORDS.has(term))
+  );
+}
+
+function termVariants(term) {
+  const variants = [term];
+
+  if (term.endsWith("ciones") && term.length > 8) {
+    variants.push(`${term.slice(0, -6)}cion`);
+  }
+
+  if (term.endsWith("es") && term.length > 5) {
+    variants.push(term.slice(0, -2));
+  }
+
+  if (term.endsWith("s") && term.length > 4) {
+    variants.push(term.slice(0, -1));
+  }
+
+  return unique(variants);
+}
+
+function unique(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
 function toOverview(proposal) {
   return {
     id: proposal.id,
@@ -716,6 +908,18 @@ function scrollToDetail() {
   document.getElementById("detalle").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function scrollToRelevantResult() {
+  const firstMatchedDiffId = state.searchContext?.matchedDiffIds?.[0];
+
+  if (!firstMatchedDiffId) {
+    scrollToDetail();
+    return;
+  }
+
+  const target = document.getElementById(`diff-${firstMatchedDiffId}`);
+  (target ?? document.getElementById("detalle")).scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function maybeScrollForCapture() {
   const target = new URLSearchParams(window.location.search).get("capture");
 
@@ -730,6 +934,10 @@ function maybeScrollForCapture() {
 
 function apiBaseFromRuntime() {
   return new URLSearchParams(window.location.search).get("api") || window.LEXMAPA_CONFIG?.apiBaseUrl || "";
+}
+
+function initialQueryFromUrl() {
+  return new URLSearchParams(window.location.search).get("q")?.trim() ?? "";
 }
 
 function formatStatus(value) {
@@ -755,9 +963,25 @@ function formatDate(value) {
   }
 
   return new Intl.DateTimeFormat("es-AR", {
-    dateStyle: "medium"
+    dateStyle: "medium",
+    timeZone: "UTC"
   }).format(new Date(value));
 }
+
+const STOP_WORDS = new Set([
+  "con",
+  "del",
+  "las",
+  "los",
+  "pasa",
+  "para",
+  "por",
+  "que",
+  "una",
+  "uno"
+]);
+
+const GENERIC_PROPOSAL_TERMS = new Set(["cambia", "cambio", "cambios", "legal", "laboral", "ley", "reforma"]);
 
 function normalize(value) {
   return String(value ?? "")

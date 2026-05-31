@@ -52,6 +52,21 @@ addCheck({
 });
 
 addCheck({
+  id: "query-aware-result-focus",
+  area: "Discovery",
+  severity: "critical",
+  pass:
+    files.html.includes("search-answer-panel") &&
+    files.js.includes("matchedDiffIds") &&
+    files.js.includes("initialQueryFromUrl") &&
+    files.js.includes("Coincide con tu busqueda") &&
+    files.css.includes(".matched-diff") &&
+    files.css.includes(".capture-search"),
+  evidence: "Search results can explain why a proposal matched, support shareable query URLs and highlight relevant diffs.",
+  recommendation: "Keep natural-language search connected to concrete changes, not only proposal titles."
+});
+
+addCheck({
   id: "recent-empty-state",
   area: "Information architecture",
   severity: "major",
@@ -125,6 +140,15 @@ addCheck({
     files.js.includes("legalAdviceWarning"),
   evidence: "Source, data status, scope and legal warning are rendered.",
   recommendation: "Keep trust metadata visible without requiring a technical view."
+});
+
+addCheck({
+  id: "stable-legal-dates",
+  area: "Trust",
+  severity: "major",
+  pass: files.js.includes('timeZone: "UTC"') && files.js.includes("formatDate"),
+  evidence: "Legal update dates are formatted without local timezone day drift.",
+  recommendation: "Keep date-only legal metadata stable across locales."
 });
 
 addCheck({

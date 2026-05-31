@@ -22,7 +22,9 @@ Secciones implementadas:
 - como leer LexMapa;
 - detalle de propuesta/reforma;
 - comparacion texto vigente vs texto propuesto;
-- fuentes originales de la propuesta y de cada diff.
+- fuentes originales de la propuesta y de cada diff;
+- respuesta contextual cuando la busqueda coincide con temas, grupos o diffs
+  concretos.
 
 ## Reglas UX
 
@@ -34,6 +36,8 @@ Secciones implementadas:
 - El usuario no juridico debe entender el cambio sin navegar primero por una
   ficha tecnica.
 - No hay accesos rapidos/chips destacados debajo del buscador en esta etapa.
+- Una pregunta especifica debe orientar al usuario hacia los diffs relacionados,
+  no solo abrir la propuesta general.
 
 ## Busqueda
 
@@ -43,6 +47,10 @@ Preguntas esperadas para el MVP:
 - `que cambia para los trabajadores`
 - `que pasa con las indemnizaciones`
 - `que cambia en el periodo de prueba`
+
+Cuando una busqueda coincide con un tema, grupo impactado o diff especifico, la
+vista debe mostrar una respuesta breve y resaltar los cambios relacionados.
+Tambien puede abrirse una busqueda desde URL usando `?q=`.
 
 ## Vista diff
 

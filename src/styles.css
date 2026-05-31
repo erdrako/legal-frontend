@@ -398,6 +398,20 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+.search-answer-panel {
+  border-left: 4px solid var(--teal);
+  background: #f7fbfa;
+}
+
+.search-answer-panel[hidden] {
+  display: none;
+}
+
+.search-answer-panel p {
+  color: var(--ink);
+  line-height: 1.55;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -482,12 +496,37 @@ h3 {
   gap: 14px;
 }
 
+.diff-card.matched-diff {
+  border-color: #8ac7b1;
+  box-shadow: 0 16px 42px rgba(23, 107, 102, 0.12);
+}
+
 .diff-index {
   display: block;
   margin-bottom: 4px;
   color: var(--muted);
   font-size: 0.84rem;
   font-weight: 900;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.match-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #e5f6f3;
+  color: var(--teal);
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .change-badge.added {
@@ -577,18 +616,34 @@ h3 {
 }
 
 .capture-diff .hero-section,
+.capture-search .hero-section,
 .capture-diff #cambios-en-debate,
+.capture-search #cambios-en-debate,
 .capture-diff #cambios-recientes,
+.capture-search #cambios-recientes,
 .capture-diff #temas,
+.capture-search #temas,
 .capture-diff #normas,
+.capture-search #normas,
 .capture-diff #como-leer,
+.capture-search #como-leer,
 .capture-diff .detail-header,
 .capture-diff .detail-grid,
 .capture-diff .detail-shell > .panel {
   display: none;
 }
 
+.capture-search .detail-grid,
+.capture-search .detail-shell > .panel:not(.search-answer-panel),
+.capture-search .diff-card:not(.matched-diff) {
+  display: none;
+}
+
 .capture-diff .detail-shell {
+  margin-top: 0;
+}
+
+.capture-search .detail-shell {
   margin-top: 0;
 }
 

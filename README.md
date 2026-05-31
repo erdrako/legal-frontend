@@ -54,6 +54,8 @@ Que cambia con la reforma laboral
 Incluye busqueda, resumen simple, temas afectados, grupos impactados, diff
 texto actual vs texto propuesto, explicacion practica y trazabilidad visible.
 El fixture embebido es manual y acotado; no representa asesoramiento legal.
+Cuando la busqueda coincide con un tema, grupo o cambio concreto, la pantalla
+muestra una respuesta breve y resalta los diffs relacionados.
 
 La home esta organizada por secciones:
 

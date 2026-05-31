@@ -1,9 +1,17 @@
 {
-  "generatedAt": "2026-05-31T08:38:42.491Z",
+  "generatedAt": "2026-05-31T13:08:51.590Z",
   "target": "legal-frontend",
   "score": 100,
   "status": "PASS",
   "checks": [
+    {
+      "id": "home-six-sections",
+      "area": "Information architecture",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Home is organized into hero, debate, recent, topics, norms and how-to-read sections.",
+      "recommendation": "Keep the home structured by sections instead of shortcuts."
+    },
     {
       "id": "simple-language-search",
       "area": "Discovery",
@@ -13,12 +21,28 @@
       "recommendation": "Keep the first action centered on a plain-language question."
     },
     {
-      "id": "suggested-questions",
+      "id": "no-quick-access-chips",
       "area": "Discovery",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Home does not render quick-access chips below the search box.",
+      "recommendation": "Organize discovery through sections, not highlighted shortcut chips."
+    },
+    {
+      "id": "query-aware-result-focus",
+      "area": "Discovery",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Search results can explain why a proposal matched, support shareable query URLs and highlight relevant diffs.",
+      "recommendation": "Keep natural-language search connected to concrete changes, not only proposal titles."
+    },
+    {
+      "id": "recent-empty-state",
+      "area": "Information architecture",
       "severity": "major",
       "pass": true,
-      "evidence": "Suggested searches cover the expected MVP user intents.",
-      "recommendation": "Add more suggestions only after observing real search language."
+      "evidence": "Recent changes has an explicit empty state instead of invented data.",
+      "recommendation": "Keep empty states honest while data is incomplete."
     },
     {
       "id": "summary-before-legal-text",
@@ -27,6 +51,14 @@
       "pass": true,
       "evidence": "The screen gives a plain summary before the article-by-article diff.",
       "recommendation": "Do not lead with dense legal text."
+    },
+    {
+      "id": "important-norms-secondary",
+      "area": "Information architecture",
+      "severity": "major",
+      "pass": true,
+      "evidence": "Important norms is visually marked as reference, not the main product flow.",
+      "recommendation": "Keep norms below debate/recent changes and visually quieter."
     },
     {
       "id": "affected-topics-and-groups",
@@ -61,6 +93,30 @@
       "recommendation": "Keep trust metadata visible without requiring a technical view."
     },
     {
+      "id": "stable-legal-dates",
+      "area": "Trust",
+      "severity": "major",
+      "pass": true,
+      "evidence": "Legal update dates are formatted without local timezone day drift.",
+      "recommendation": "Keep date-only legal metadata stable across locales."
+    },
+    {
+      "id": "diff-original-sources",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Each diff renders sources for current and proposed versions.",
+      "recommendation": "Every diff must expose both original source states."
+    },
+    {
+      "id": "pending-source-visible",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Missing original links are explicit and visible.",
+      "recommendation": "Never hide or invent missing original source links."
+    },
+    {
       "id": "no-personalized-legal-advice",
       "area": "Trust",
       "severity": "critical",
@@ -75,6 +131,14 @@
       "pass": true,
       "evidence": "The static page has language, landmarks, hidden labels and one H1.",
       "recommendation": "Keep labels and document structure explicit as the UI grows."
+    },
+    {
+      "id": "brief-how-to-read",
+      "area": "Comprehension",
+      "severity": "major",
+      "pass": true,
+      "evidence": "How-to-read section is brief and uses the four expected concepts.",
+      "recommendation": "Keep the explanation short, visual and useful."
     },
     {
       "id": "responsive-layout",
