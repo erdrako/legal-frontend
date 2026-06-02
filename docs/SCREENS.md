@@ -47,12 +47,12 @@ Secciones implementadas:
 Preguntas esperadas para el MVP:
 
 - `hojarasca`
-- `super rigi`
-- `transparencia`
 - `biocombustibles`
-- `pesca ilegal`
-- `seguridad social`
-- `doble imposicion`
+- `biodiesel`
+- `bioetanol`
+- `parque marino`
+- `Monte Leon`
+- `Santa Cruz`
 
 Cuando una busqueda coincide con un tema, grupo impactado o diff especifico, la
 vista debe mostrar una respuesta breve y orientar a la propuesta relacionada.
@@ -73,7 +73,7 @@ Cuando los textos estan cargados, cada cambio muestra:
 - fuente y estado del dato.
 - fuente vigente original;
 - fuente propuesta original;
-- estado de fuente: `LOADED` o `PENDING`.
+- estado de fuente: `LOADED`, `PENDING` o `NEEDS_REVIEW`.
 
 Cuando los textos todavia no estan cargados, la seccion muestra un estado
 pendiente profesional y no inventa contenido legal.

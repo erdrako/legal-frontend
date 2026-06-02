@@ -9,6 +9,7 @@ const outputBase = resolve(outputBaseArg?.split("=")[1] ?? "reports/ux-audit.lat
 const files = {
   html: readFileSync(resolve("index.html"), "utf8"),
   js: readFileSync(resolve("src/app.js"), "utf8"),
+  data: readFileSync(resolve("src/senate-agenda-fixtures.js"), "utf8"),
   css: readFileSync(resolve("src/styles.css"), "utf8")
 };
 
@@ -71,14 +72,16 @@ addCheck({
   area: "Data trust",
   severity: "critical",
   pass:
-    files.js.includes("REAL_AGENDA_ITEM") &&
-    files.js.includes("ley-hojarasca") &&
-    files.js.includes("super-rigi") &&
-    files.js.includes("transparencia-gestion-intereses") &&
-    files.js.includes("biocombustibles") &&
-    files.js.includes("officialAgendaSourceUrl") &&
-    !files.js.includes("reforma-laboral-mvp-2026"),
-  evidence: "The productive UI seed uses official agenda items and no longer exposes the old fictional fixture.",
+    files.data.includes("REAL_AGENDA_ITEM") &&
+    files.data.includes("ley-hojarasca") &&
+    files.data.includes("biocombustibles") &&
+    files.data.includes("parque-marino-monte-leon") &&
+    files.data.includes("officialAgendaSourceUrl") &&
+    files.data.includes("proposedTextOriginalUrls") &&
+    !files.data.includes("super-rigi") &&
+    !files.data.includes("diputados.gob.ar") &&
+    !files.data.includes("reforma-laboral-mvp-2026"),
+  evidence: "The productive UI seed uses official Senate agenda items and no longer exposes fictional or Diputados data in this vertical slice.",
   recommendation: "Keep test/demo data out of the user-facing home."
 });
 
@@ -198,7 +201,7 @@ addCheck({
   id: "pending-source-visible",
   area: "Trust",
   severity: "critical",
-  pass: files.js.includes("Fuente original pendiente de carga"),
+  pass: files.data.includes("Fuente original pendiente de carga") && files.js.includes("PENDING_SOURCE_TEXT"),
   evidence: "Missing original links are explicit and visible.",
   recommendation: "Never hide or invent missing original source links."
 });
@@ -219,8 +222,8 @@ addCheck({
   area: "Trust",
   severity: "critical",
   pass:
-    files.js.includes("no brinda asesoramiento legal personalizado") &&
-    !/en tu caso|debes hacer|tenes que hacer/i.test(files.html + files.js),
+    files.data.includes("no brinda asesoramiento legal personalizado") &&
+    !/en tu caso|debes hacer|tenes que hacer/i.test(files.html + files.js + files.data),
   evidence: "The interface warns that it is not personalized legal advice.",
   recommendation: "Avoid imperative advice for a user's individual situation."
 });

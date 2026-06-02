@@ -45,20 +45,21 @@ La UI debe ayudar a personas no especialistas a entender que cambia con una refo
 
 ## MVP actual
 
-La pantalla inicial esta orientada a items reales proximos a tratarse en el
-Congreso argentino:
+La pantalla inicial esta orientada al vertical slice de Senado con items reales
+proximos a tratarse:
 
 ```text
 hojarasca
-super rigi
-transparencia
 biocombustibles
+parque marino
+Monte Leon
+Santa Cruz
 ```
 
 Incluye busqueda, resumen simple, camara, fecha de tratamiento, comisiones,
 temas afectados, grupos impactados, fuentes oficiales y trazabilidad visible.
-El fixture embebido es manual, real y acotado a agendas oficiales; no representa
-asesoramiento legal.
+El fixture embebido se deriva de la importacion deterministica del Worker sobre
+agendas oficiales del Senado; no representa asesoramiento legal.
 
 Si una propuesta todavia no tiene textos vigente/propuesto cargados, la vista
 muestra `Comparacion articulo por articulo pendiente de carga` y mantiene

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 
 const html = readFileSync("index.html", "utf8");
 const js = readFileSync("src/app.js", "utf8");
+const data = readFileSync("src/senate-agenda-fixtures.js", "utf8");
 const css = readFileSync("src/styles.css", "utf8");
 const config = readFileSync("config.js", "utf8");
 
@@ -19,19 +20,22 @@ assert(js.includes("fallbackProposal"), "app.js must include change proposal see
 assert(js.includes("fallbackProposals"), "app.js must include imported agenda proposals");
 assert(js.includes("loadInitialData"), "app.js must support API-backed data loading");
 assert(js.includes("change-proposals"), "app.js must load change proposals from API");
+assert(js.includes("senate-agenda-fixtures"), "app.js must keep public seed data out of UI logic");
 assert(js.includes("renderDiffs"), "app.js must render legal diffs");
 assert(js.includes("matchedDiffIds"), "app.js must support query-aware diff matches");
 assert(js.includes("initialQueryFromUrl"), "app.js must support shareable search URLs");
 assert(js.includes('timeZone: "UTC"'), "app.js must avoid timezone drift for legal update dates");
 assert(js.includes("legalAdviceWarning"), "app.js must show legal advice warning");
-assert(js.includes("Fuente original pendiente de carga"), "app.js must show missing original source state");
+assert(data.includes("Fuente original pendiente de carga") && js.includes("PENDING_SOURCE_TEXT"), "app.js must show missing original source state");
 assert(js.includes("originalSource"), "app.js must render original sources");
-assert(js.includes("REAL_AGENDA_ITEM"), "app.js must use real agenda fixture state");
-assert(js.includes("ley-hojarasca"), "app.js must include imported Ley Hojarasca agenda item");
-assert(js.includes("super-rigi"), "app.js must include imported Super RIGI agenda item");
-assert(js.includes("transparencia-gestion-intereses"), "app.js must include imported transparency agenda item");
-assert(js.includes("biocombustibles"), "app.js must include imported biocombustibles agenda item");
-assert(js.includes("officialAgendaSourceUrl"), "app.js must expose official agenda source URLs");
+assert(data.includes("REAL_AGENDA_ITEM"), "fixture data must use real agenda item state");
+assert(data.includes("ley-hojarasca"), "fixture data must include imported Ley Hojarasca agenda item");
+assert(data.includes("biocombustibles"), "fixture data must include imported biocombustibles agenda item");
+assert(data.includes("parque-marino-monte-leon"), "fixture data must include imported Parque Marino Monte Leon agenda item");
+assert(data.includes("proposedTextOriginalUrls"), "fixture data must expose all linked proposed texts when grouped");
+assert(data.includes("officialAgendaSourceUrl"), "fixture data must expose official agenda source URLs");
+assert(!data.includes("super-rigi"), "fixture data must not expose Diputados items during Senate vertical slice");
+assert(!data.includes("diputados.gob.ar"), "fixture data must not depend on Diputados during Senate vertical slice");
 assert(js.includes("Comparacion articulo por articulo pendiente de carga"), "app.js must show pending diff state");
 assert(html.includes("agenda-meta"), "index.html must include agenda metadata panel");
 assert(!js.includes("reforma-laboral-mvp-2026"), "app.js must not expose the old test proposal");
