@@ -2,6 +2,10 @@ const state = {
   apiBase: apiBaseFromRuntime(),
   processors: [],
   queue: null,
+  detectedProjects: null,
+  review: null,
+  adminToken: window.sessionStorage.getItem("lexmapa.ops.adminToken") ?? "",
+  actionMessage: "",
   error: null,
   generatedAt: null
 };
@@ -10,6 +14,34 @@ document.getElementById("refresh-status").addEventListener("click", () => {
   loadStatus();
 });
 
+document.getElementById("save-admin-token").addEventListener("click", () => {
+  state.adminToken = document.getElementById("admin-token").value.trim();
+  if (state.adminToken) {
+    window.sessionStorage.setItem("lexmapa.ops.adminToken", state.adminToken);
+    state.actionMessage = "Token cargado para acciones protegidas";
+  } else {
+    window.sessionStorage.removeItem("lexmapa.ops.adminToken");
+    state.actionMessage = "Modo lectura";
+  }
+  render();
+});
+
+document.getElementById("clear-admin-token").addEventListener("click", () => {
+  state.adminToken = "";
+  document.getElementById("admin-token").value = "";
+  window.sessionStorage.removeItem("lexmapa.ops.adminToken");
+  state.actionMessage = "Token eliminado. Modo lectura";
+  render();
+});
+
+document.addEventListener("click", (event) => {
+  const retryButton = event.target.closest("[data-retry-job]");
+  if (retryButton) {
+    retryJob(retryButton.dataset.retryJob);
+  }
+});
+
+document.getElementById("admin-token").value = state.adminToken;
 loadStatus();
 window.setInterval(loadStatus, 30_000);
 
@@ -22,20 +54,26 @@ async function loadStatus() {
 
   try {
     const apiBase = state.apiBase.replace(/\/$/, "");
-    const [processorsResponse, queueResponse] = await Promise.all([
+    const [processorsResponse, queueResponse, detectedResponse, reviewResponse] = await Promise.all([
       fetch(`${apiBase}/processors/status`),
-      fetch(`${apiBase}/processing-queue?limit=25`)
+      fetch(`${apiBase}/processing-queue?limit=25`),
+      fetch(`${apiBase}/detected-projects?limit=50`),
+      fetch(`${apiBase}/processing-review?limit=50`)
     ]);
 
-    if (!processorsResponse.ok || !queueResponse.ok) {
+    if (!processorsResponse.ok || !queueResponse.ok || !detectedResponse.ok || !reviewResponse.ok) {
       throw new Error("Operational status API failed");
     }
 
     const processorsPayload = await processorsResponse.json();
     const queuePayload = await queueResponse.json();
+    const detectedPayload = await detectedResponse.json();
+    const reviewPayload = await reviewResponse.json();
 
     state.processors = processorsPayload.processors ?? [];
     state.queue = queuePayload;
+    state.detectedProjects = detectedPayload;
+    state.review = reviewPayload;
     state.generatedAt = queuePayload.generatedAt ?? processorsPayload.generatedAt ?? new Date().toISOString();
     state.error = null;
   } catch (error) {
@@ -48,8 +86,11 @@ async function loadStatus() {
 
 function render() {
   setText("status-updated", state.error ? state.error : `Actualizado: ${formatDateTime(state.generatedAt)}`);
+  setText("action-status", state.actionMessage || (state.adminToken ? "Token cargado en esta sesion" : "Modo lectura"));
   renderProcessors();
   renderQueue();
+  renderDetectedProjects();
+  renderReview();
 }
 
 function renderProcessors() {
@@ -154,10 +195,188 @@ function renderQueue() {
             <span>${job.requiredCapabilities?.length ? escapeHtml(job.requiredCapabilities.join(", ")) : "Sin capacidades especiales"}</span>
           </div>
           ${job.sourceUrl ? `<a class="secondary-action ops-source-link" href="${escapeHtml(job.sourceUrl)}" target="_blank" rel="noreferrer">Abrir fuente del job</a>` : ""}
+          ${["FAILED", "NEEDS_REVIEW", "NOT_COMPARABLE"].includes(job.status) ? `<button class="secondary-action ops-source-link" type="button" data-retry-job="${escapeHtml(job.id)}">Reintentar job</button>` : ""}
         </article>
       `
     )
     .join("");
+}
+
+function renderDetectedProjects() {
+  const payload = state.detectedProjects;
+  const projects = payload?.projects ?? [];
+  const counts = payload?.counts ?? {};
+  setText("detected-project-count", `${projects.length} detectado${projects.length === 1 ? "" : "s"}`);
+
+  document.getElementById("detected-project-metrics").innerHTML = [
+    ["total", "Total"],
+    ["needsReview", "Necesitan revision"],
+    ["readyForValidation", "Listos validacion"],
+    ["duplicates", "Duplicados"],
+    ["proposedTextLoaded", "Texto propuesto"],
+    ["currentTextLoaded", "Texto vigente"]
+  ]
+    .map(
+      ([key, label]) => `
+        <article class="metric-card">
+          <span>${label}</span>
+          <strong>${Number(counts[key] ?? 0)}</strong>
+        </article>
+      `
+    )
+    .join("");
+
+  if (projects.length === 0) {
+    document.getElementById("detected-project-list").innerHTML = `
+      <div class="empty-state">
+        <strong>No hay proyectos detectados en staging</strong>
+        <p>Cuando el collector detecte items de agenda, apareceran aca antes de cualquier publicacion.</p>
+      </div>
+    `;
+    return;
+  }
+
+  document.getElementById("detected-project-list").innerHTML = projects
+    .map((project) => {
+      const sources = project.sources ?? [];
+      return `
+        <article class="job-card">
+          <div>
+            <div class="card-topline">
+              <span class="status-pill">${formatStatus(project.status)}</span>
+              <span class="status-pill muted">${escapeHtml(project.chamber ?? "Camara pendiente")}</span>
+              ${project.duplicateWarning ? `<span class="status-pill warning">Duplicado</span>` : ""}
+            </div>
+            <h3>${escapeHtml(project.title ?? project.expedientNumber ?? project.id)}</h3>
+            <p class="small-muted mono-text">${escapeHtml(project.expedientNumber ?? project.id)}</p>
+          </div>
+          <div class="ops-job-meta">
+            <span>Tratamiento: ${formatDateTime(project.scheduledAt)}</span>
+            <span>Creado: ${formatDateTime(project.createdAt)}</span>
+            <span>Actualizado: ${formatDateTime(project.updatedAt)}</span>
+            ${project.processingJob ? `<span>Job: ${formatStatus(project.processingJob.status)}</span>` : "<span>Job: pendiente de crear</span>"}
+          </div>
+          ${project.duplicateWarning ? `<p class="warning-text">${escapeHtml(project.duplicateWarning)}</p>` : ""}
+          <div class="mini-list">
+            <strong>Fuentes</strong>
+            <span>${sources.length ? sources.map((source) => `${escapeHtml(source.role)}: ${escapeHtml(source.status)}`).join(" | ") : "Sin fuentes asociadas"}</span>
+          </div>
+          <div class="source-list">
+            ${sources
+              .filter((source) => source.url)
+              .slice(0, 5)
+              .map((source) => `<a class="secondary-action ops-source-link" href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.role)}</a>`)
+              .join("")}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderReview() {
+  const review = state.review?.review ?? {};
+  const cards = [
+    ["Pendientes", review.pendingJobs?.length ?? 0],
+    ["Fallidos", review.failedJobs?.length ?? 0],
+    ["Needs review", review.needsReviewJobs?.length ?? 0],
+    ["No comparables", review.notComparableJobs?.length ?? 0],
+    ["Duplicados", review.duplicateProjects?.length ?? 0],
+    ["Candidatos", review.candidates?.length ?? 0]
+  ];
+
+  document.getElementById("review-metrics").innerHTML = cards
+    .map(
+      ([label, value]) => `
+        <article class="metric-card">
+          <span>${label}</span>
+          <strong>${Number(value)}</strong>
+        </article>
+      `
+    )
+    .join("");
+
+  const reviewItems = [
+    ...(review.failedJobs ?? []).map((job) => ({ type: "Job fallido", title: job.sourceLabel ?? job.id, status: job.status, id: job.id, retry: true })),
+    ...(review.needsReviewJobs ?? []).map((job) => ({ type: "Job necesita revision", title: job.sourceLabel ?? job.id, status: job.status, id: job.id, retry: true })),
+    ...(review.duplicateProjects ?? []).map((project) => ({
+      type: "Proyecto duplicado",
+      title: project.title ?? project.expedientNumber,
+      status: project.status,
+      id: project.id,
+      note: project.duplicateWarning
+    })),
+    ...(review.affectedLegalItems ?? []).map((item) => ({
+      type: "Texto vigente pendiente",
+      title: item.title,
+      status: item.sourceStatus,
+      id: item.id,
+      note: item.notes
+    })),
+    ...(review.candidates ?? []).map((candidate) => ({
+      type: "Candidato de diff",
+      title: candidate.title,
+      status: candidate.reviewStatus,
+      id: candidate.id,
+      note: candidate.validationWarnings?.join(", ")
+    }))
+  ];
+
+  if (reviewItems.length === 0) {
+    document.getElementById("review-list").innerHTML = `
+      <div class="empty-state">
+        <strong>No hay casos de revision cargados</strong>
+        <p>Los casos pendientes, fallidos o no comparables apareceran aca con su motivo operativo.</p>
+      </div>
+    `;
+    return;
+  }
+
+  document.getElementById("review-list").innerHTML = reviewItems
+    .slice(0, 80)
+    .map(
+      (item) => `
+        <article class="job-card">
+          <div class="card-topline">
+            <span class="status-pill">${escapeHtml(item.type)}</span>
+            <span class="status-pill muted">${formatStatus(item.status)}</span>
+          </div>
+          <h3>${escapeHtml(item.title ?? item.id)}</h3>
+          <p class="small-muted mono-text">${escapeHtml(item.id)}</p>
+          ${item.note ? `<p class="warning-text">${escapeHtml(item.note)}</p>` : ""}
+          ${item.retry ? `<button class="secondary-action ops-source-link" type="button" data-retry-job="${escapeHtml(item.id)}">Reintentar job</button>` : ""}
+        </article>
+      `
+    )
+    .join("");
+}
+
+async function retryJob(jobId) {
+  if (!state.adminToken) {
+    state.actionMessage = "Para reintentar un job, carga primero el token operativo.";
+    render();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${state.apiBase.replace(/\/$/, "")}/processing-queue/jobs/${encodeURIComponent(jobId)}/retry`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${state.adminToken}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Retry failed with HTTP ${response.status}`);
+    }
+
+    state.actionMessage = `Job ${jobId} reencolado`;
+    await loadStatus();
+  } catch (error) {
+    console.warn(error);
+    state.actionMessage = "No se pudo reencolar el job. Revisar token o API.";
+    render();
+  }
 }
 
 function emptyCounts() {

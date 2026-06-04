@@ -294,11 +294,15 @@ addCheck({
     files.opsHtml.includes("job-list") &&
     files.opsJs.includes("/processors/status") &&
     files.opsJs.includes("/processing-queue") &&
+    files.opsJs.includes("/detected-projects") &&
+    files.opsJs.includes("/processing-review") &&
     files.opsJs.includes("No hay procesadores remotos registrados") &&
+    files.opsHtml.includes("proyectos-detectados") &&
+    files.opsHtml.includes("review-list") &&
     files.css.includes(".processor-card") &&
     files.css.includes(".job-card"),
-  evidence: "A separate operational page can show processor heartbeats and queue status without cluttering the public legal-diff home.",
-  recommendation: "Keep processor controls out of the public UX; expose only read-only operational state."
+  evidence: "A separate operational page can show processor heartbeats, queue status, staging projects and review cases without cluttering the public legal-diff home.",
+  recommendation: "Keep protected actions token-gated and outside the public legal-diff UX."
 });
 
 const score = calculateScore(checks);

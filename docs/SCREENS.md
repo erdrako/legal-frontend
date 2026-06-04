@@ -41,22 +41,24 @@ Muestra:
 - job actual;
 - conteos de cola;
 - jobs recientes.
+- proyectos detectados en staging;
+- casos de revision: pendientes, fallidos, `NEEDS_REVIEW`, candidatos de diff,
+  normas afectadas sin texto vigente y duplicados;
+- acciones protegidas como retry de job, usando token operativo ingresado por el
+  operador en el navegador.
 
-No expone acciones administrativas, tokens ni enrolamiento desde el navegador.
+No incluye tokens hardcodeados, enrolamiento publico ni secretos en el bundle.
+El token operativo se guarda solo en `sessionStorage` del navegador del
+operador.
 
 ## Pantalla operativa de revision
 
-Pendiente planificado:
-
-```text
-/ops/review
-```
-
-Debe ser una vista interna para revisar casos que no pueden publicarse todavia.
+Implementada dentro de `ops.html` como bloque de revision interna para casos que
+no pueden publicarse todavia.
 No reemplaza la home publica ni debe mostrar contenido pendiente como si fuera
 diff validado.
 
-Debe permitir filtrar y navegar:
+Permite navegar:
 
 - jobs pendientes;
 - jobs fallidos;
@@ -69,30 +71,24 @@ Debe permitir filtrar y navegar:
 
 Acciones esperadas:
 
-- reintentar job;
-- reencolar OCR/procesamiento;
-- reejecutar source resolution;
-- cargar o corregir fuente oficial;
-- marcar texto vigente como `NOT_APPLICABLE`;
-- aprobar o rechazar candidato de diff;
-- promover un diff al read model publico;
-- fusionar o ignorar duplicados.
+- reintentar job: implementado con token operativo;
+- reencolar OCR/procesamiento: pendiente;
+- reejecutar source resolution: pendiente;
+- cargar o corregir fuente oficial: pendiente;
+- marcar texto vigente como `NOT_APPLICABLE`: pendiente;
+- aprobar o rechazar candidato de diff: pendiente;
+- promover un diff al read model publico: pendiente;
+- fusionar o ignorar duplicados: pendiente.
 
 La pantalla debe mostrar siempre fuente, hash/estado cuando exista, parser o
 resolver usado y motivo de bloqueo.
 
 ## Proyectos detectados
 
-Pendiente planificado:
+Seccion navegable implementada dentro de `ops.html` para leyes/proyectos
+propuestos capturados en staging, separada de "Cambios en debate" publico.
 
-```text
-Proyectos detectados
-```
-
-Seccion navegable para leyes/proyectos propuestos capturados en staging,
-separada de "Cambios en debate" publico.
-
-Debe mostrar:
+Muestra:
 
 - expediente;
 - camara;
@@ -105,8 +101,9 @@ Debe mostrar:
 - link a fuente original;
 - acceso al detalle tecnico/revisable.
 
-Puede listar items no promovidos, pero con estado visible y sin presentarlos
-como comparaciones legales aprobadas.
+Lista items no promovidos con estado visible y sin presentarlos como
+comparaciones legales aprobadas. Los items marcados `rejected` por limpieza de
+parser quedan fuera del listado accionable y se conservan en revision operativa.
 
 ## Reglas UX
 

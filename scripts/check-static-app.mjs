@@ -51,9 +51,14 @@ assert(css.includes(".agenda-meta"), "styles.css must style agenda metadata");
 assert(css.includes("@media"), "styles.css must include responsive rules");
 assert(opsHtml.includes("Estado operativo"), "ops.html must expose operational status page");
 assert(opsHtml.includes("processor-list") && opsHtml.includes("job-list"), "ops.html must include processor and queue containers");
+assert(opsHtml.includes("proyectos-detectados") && opsHtml.includes("review-list"), "ops.html must include detected projects and review sections");
+assert(opsHtml.includes("admin-token"), "ops.html must include local admin token input for protected actions");
 assert(opsHtml.includes("config.js"), "ops.html must load runtime config");
 assert(opsJs.includes("/processors/status"), "ops.js must load processor status from API");
 assert(opsJs.includes("/processing-queue"), "ops.js must load processing queue from API");
+assert(opsJs.includes("/detected-projects"), "ops.js must load detected projects from API");
+assert(opsJs.includes("/processing-review"), "ops.js must load review state from API");
+assert(opsJs.includes("/retry"), "ops.js must support protected job retry action");
 assert(opsJs.includes("No hay procesadores remotos registrados"), "ops.js must show empty processor state");
 assert(css.includes(".processor-card") && css.includes(".job-card"), "styles.css must style operational status cards");
 

@@ -15,6 +15,8 @@
       <nav class="nav-list" aria-label="Navegacion operativa">
         <a href="#procesadores">Procesadores</a>
         <a href="#cola">Cola</a>
+        <a href="#proyectos-detectados">Proyectos detectados</a>
+        <a href="#revision">Revision</a>
         <a href="./index.html">Vista publica</a>
       </nav>
     </header>
@@ -31,6 +33,22 @@
         <div class="refresh-row">
           <button class="primary-action" type="button" id="refresh-status">Actualizar estado</button>
           <span class="section-note" id="status-updated">Sin datos cargados</span>
+        </div>
+      </section>
+
+      <section class="home-section" id="acciones-operativas">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Acciones protegidas</p>
+            <h2>Token operativo local</h2>
+          </div>
+          <span class="section-note" id="action-status">Modo lectura</span>
+        </div>
+        <div class="ops-token-row">
+          <label class="sr-only" for="admin-token">Token operativo</label>
+          <input id="admin-token" class="search-input" type="password" autocomplete="off" placeholder="Pegar token admin para reintentos">
+          <button class="secondary-action" type="button" id="save-admin-token">Usar token</button>
+          <button class="secondary-action" type="button" id="clear-admin-token">Limpiar</button>
         </div>
       </section>
 
@@ -55,6 +73,30 @@
         </div>
         <div class="metric-row" id="queue-metrics"></div>
         <div class="job-list" id="job-list"></div>
+      </section>
+
+      <section class="home-section" id="proyectos-detectados">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Staging Senado</p>
+            <h2>Proyectos detectados</h2>
+          </div>
+          <span class="section-note" id="detected-project-count">0 detectados</span>
+        </div>
+        <div class="metric-row" id="detected-project-metrics"></div>
+        <div class="job-list" id="detected-project-list"></div>
+      </section>
+
+      <section class="home-section" id="revision">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Revision interna</p>
+            <h2>Pendientes y candidatos</h2>
+          </div>
+          <span class="section-note">No publicar sin promocion validada</span>
+        </div>
+        <div class="metric-row" id="review-metrics"></div>
+        <div class="job-list" id="review-list"></div>
       </section>
     </main>
 

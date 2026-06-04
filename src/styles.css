@@ -688,6 +688,13 @@ h3 {
   align-items: center;
 }
 
+.ops-token-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
 .metric-row,
 .processor-grid {
   display: grid;
@@ -772,6 +779,24 @@ h3 {
   text-decoration: none;
 }
 
+.source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-pill.warning {
+  background: #fff4d6;
+  color: #7a4b00;
+}
+
+.warning-text {
+  margin: 0;
+  color: #7a4b00;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 @media (max-width: 980px) {
   .top-nav {
     align-items: flex-start;
@@ -790,7 +815,8 @@ h3 {
   .legal-compare,
   .trust-split,
   .metric-row,
-  .processor-grid {
+  .processor-grid,
+  .ops-token-row {
     grid-template-columns: 1fr;
   }
 
