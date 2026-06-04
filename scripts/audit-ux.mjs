@@ -141,6 +141,19 @@ addCheck({
 });
 
 addCheck({
+  id: "bounded-legal-text-panels",
+  area: "Comparison",
+  severity: "major",
+  pass:
+    files.js.includes("legal-text-body") &&
+    files.css.includes(".legal-text-body") &&
+    files.css.includes("overflow: auto") &&
+    files.css.includes("scrollbar-gutter"),
+  evidence: "Long legal texts are constrained inside scrollable panels.",
+  recommendation: "Keep original texts available without turning proposal detail into endless page scrolling."
+});
+
+addCheck({
   id: "plain-explanation-per-change",
   area: "Comprehension",
   severity: "critical",

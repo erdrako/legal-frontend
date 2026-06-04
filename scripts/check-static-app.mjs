@@ -24,6 +24,7 @@ assert(js.includes("loadInitialData"), "app.js must support API-backed data load
 assert(js.includes("change-proposals"), "app.js must load change proposals from API");
 assert(js.includes("senate-agenda-fixtures"), "app.js must keep public seed data out of UI logic");
 assert(js.includes("renderDiffs"), "app.js must render legal diffs");
+assert(js.includes("legal-text-body"), "app.js must wrap legal text in scrollable bodies");
 assert(js.includes("matchedDiffIds"), "app.js must support query-aware diff matches");
 assert(js.includes("initialQueryFromUrl"), "app.js must support shareable search URLs");
 assert(js.includes('timeZone: "UTC"'), "app.js must avoid timezone drift for legal update dates");
@@ -48,6 +49,7 @@ assert(!html.includes("query-examples"), "index.html must not include quick-acce
 assert(config.includes("LEXMAPA_CONFIG"), "config.js must define runtime config");
 assert(css.includes(".workspace"), "styles.css must include workspace styles");
 assert(css.includes(".legal-compare"), "styles.css must include side-by-side diff styles");
+assert(css.includes(".legal-text-body") && css.includes("overflow: auto"), "styles.css must constrain long legal text blocks with internal scrolling");
 assert(css.includes(".matched-diff"), "styles.css must highlight query-matched diffs");
 assert(css.includes(".capture-search"), "styles.css must support contextual search screenshots");
 assert(css.includes(".agenda-meta"), "styles.css must style agenda metadata");

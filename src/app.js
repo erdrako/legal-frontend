@@ -531,7 +531,9 @@ function renderDiffs(proposal) {
                 <strong>${escapeHtml(item.currentVersion.label)}</strong>
                 <span>${escapeHtml(item.currentVersion.provisionLabel ?? "")}</span>
               </div>
-              <p>${escapeHtml(item.currentVersion.text)}</p>
+              <div class="legal-text-body" tabindex="0" aria-label="Texto vigente completo">
+                <p>${escapeHtml(item.currentVersion.text)}</p>
+              </div>
             </section>
 
             <section class="legal-text proposed">
@@ -539,7 +541,9 @@ function renderDiffs(proposal) {
                 <strong>${escapeHtml(item.proposedVersion.label)}</strong>
                 <span>${escapeHtml(item.proposedVersion.provisionLabel ?? "")}</span>
               </div>
-              <p>${escapeHtml(item.proposedVersion.text)}</p>
+              <div class="legal-text-body" tabindex="0" aria-label="Texto propuesto completo">
+                <p>${escapeHtml(item.proposedVersion.text)}</p>
+              </div>
             </section>
           </div>
 

@@ -168,6 +168,10 @@ Cuando los textos estan cargados, cada cambio muestra:
   `DIFF_UNRESOLVED`.
 - advertencias visibles cuando falta matching, fuente o validacion.
 
+Los textos legales largos se muestran dentro de paneles con scroll interno. El
+encabezado del diff, estado, explicacion, advertencias y fuentes no deben quedar
+sepultados por una ley completa pegada en la pagina.
+
 Cuando los textos todavia no estan cargados, la seccion muestra un estado
 pendiente profesional. Si existe un diff parcial/asistido, se muestra con sus
 advertencias en vez de ocultarlo o presentarlo como validado.

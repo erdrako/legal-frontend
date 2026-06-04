@@ -593,8 +593,10 @@ h3 {
   border-radius: 8px;
   padding: 14px;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   align-content: start;
   gap: 12px;
+  min-width: 0;
 }
 
 .legal-text.current {
@@ -611,6 +613,26 @@ h3 {
   color: var(--muted);
   font-size: 0.84rem;
   text-align: right;
+}
+
+.legal-text-body {
+  max-height: clamp(260px, 42vh, 420px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+  min-height: 0;
+}
+
+.legal-text-body p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.legal-text-body:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 .trust-split > div {
@@ -867,5 +889,9 @@ h3 {
 
   .norm-item span {
     text-align: left;
+  }
+
+  .legal-text-body {
+    max-height: 300px;
   }
 }
