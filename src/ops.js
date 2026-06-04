@@ -38,6 +38,10 @@ document.getElementById("resolve-current-sources").addEventListener("click", () 
   resolveCurrentSources();
 });
 
+document.getElementById("resolve-diff-candidates").addEventListener("click", () => {
+  resolveDiffCandidates();
+});
+
 document.addEventListener("click", (event) => {
   const retryButton = event.target.closest("[data-retry-job]");
   if (retryButton) {
@@ -291,7 +295,8 @@ function renderReview() {
     ["Needs review", review.needsReviewJobs?.length ?? 0],
     ["No comparables", review.notComparableJobs?.length ?? 0],
     ["Duplicados", review.duplicateProjects?.length ?? 0],
-    ["Candidatos", review.candidates?.length ?? 0]
+    ["Candidatos", review.candidates?.length ?? 0],
+    ["Diffs visibles", review.resolvedDiffs?.length ?? 0]
   ];
 
   document.getElementById("review-metrics").innerHTML = cards
@@ -332,6 +337,18 @@ function renderReview() {
       status: candidate.reviewStatus,
       id: candidate.id,
       note: candidate.validationWarnings?.join(", ")
+    })),
+    ...(review.resolvedDiffs ?? []).map((diff) => ({
+      type: "Diff visible",
+      title: diff.title,
+      status: diff.publicStatus,
+      id: diff.id,
+      note: diff.validationWarnings?.join(", ") || "Sin warnings criticos",
+      evidence: {
+        detectedVerb: diff.operationType,
+        confidence: diff.confidence,
+        evidenceText: diff.traceability?.notes
+      }
     }))
   ];
 
@@ -426,6 +443,41 @@ async function resolveCurrentSources(affectedLegalItemIds = []) {
   } catch (error) {
     console.warn(error);
     state.actionMessage = "No se pudo resolver fuentes vigentes. Revisar token, API o fuente oficial.";
+    render();
+  }
+}
+
+async function resolveDiffCandidates(candidateIds = []) {
+  if (!state.adminToken) {
+    state.actionMessage = "Para generar diffs visibles, carga primero el token operativo.";
+    render();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${state.apiBase.replace(/\/$/, "")}/processing-review/diffs/resolve`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${state.adminToken}`,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        candidateIds,
+        limit: candidateIds.length ? candidateIds.length : 25,
+        enqueueFallback: true
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Diff resolution failed with HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    state.actionMessage = `Diffs: ${payload.counters?.validated ?? 0} validados, ${payload.counters?.partial ?? 0} parciales, ${payload.counters?.assisted ?? 0} asistidos, ${payload.counters?.fallbackQueued ?? 0} fallback`;
+    await loadStatus();
+  } catch (error) {
+    console.warn(error);
+    state.actionMessage = "No se pudo generar diffs visibles. Revisar token, API o migracion D1.";
     render();
   }
 }

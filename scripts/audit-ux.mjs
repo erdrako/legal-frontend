@@ -220,6 +220,19 @@ addCheck({
 });
 
 addCheck({
+  id: "diff-status-transparency",
+  area: "Trust",
+  severity: "critical",
+  pass:
+    files.js.includes("diffStatusSummary") &&
+    files.js.includes("formatDiffPublicStatus") &&
+    files.js.includes("validationWarnings") &&
+    files.css.includes(".diff-warning-panel"),
+  evidence: "Public proposal cards and diff cards expose validated, partial, assisted and unresolved states.",
+  recommendation: "Never show an assisted or partial diff as if it were fully validated."
+});
+
+addCheck({
   id: "no-personalized-legal-advice",
   area: "Trust",
   severity: "critical",
@@ -297,9 +310,12 @@ addCheck({
     files.opsJs.includes("/detected-projects") &&
     files.opsJs.includes("/processing-review") &&
     files.opsJs.includes("/processing-review/affected-items/resolve-current-sources") &&
+    files.opsJs.includes("/processing-review/diffs/resolve") &&
     files.opsJs.includes("detectionEvidence") &&
+    files.opsJs.includes("resolvedDiffs") &&
     files.opsJs.includes("No hay procesadores remotos registrados") &&
     files.opsHtml.includes("resolve-current-sources") &&
+    files.opsHtml.includes("resolve-diff-candidates") &&
     files.opsHtml.includes("proyectos-detectados") &&
     files.opsHtml.includes("review-list") &&
     files.css.includes(".processor-card") &&

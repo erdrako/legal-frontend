@@ -23,6 +23,7 @@ Secciones implementadas:
 - detalle de propuesta/reforma;
 - datos de agenda: camara, fecha de tratamiento y comisiones;
 - comparacion texto vigente vs texto propuesto cuando esta cargada;
+- estados de comparacion visible: validada, parcial, asistida o no resuelta;
 - fuentes originales de la propuesta y de cada diff;
 - respuesta contextual cuando la busqueda coincide con temas, grupos o diffs
   concretos.
@@ -80,6 +81,9 @@ Acciones esperadas:
 - marcar texto vigente como `NOT_APPLICABLE`: pendiente;
 - aprobar o rechazar candidato de diff: pendiente;
 - promover un diff al read model publico: pendiente;
+- generar/actualizar diffs visibles desde candidatos:
+  implementado con token operativo y endpoint
+  `POST /processing-review/diffs/resolve`;
 - fusionar o ignorar duplicados: pendiente.
 
 La pantalla debe mostrar siempre fuente, hash/estado cuando exista, parser o
@@ -87,6 +91,9 @@ resolver usado y motivo de bloqueo.
 
 Para normas afectadas detectadas automaticamente, la pantalla muestra referencia
 canonica, evidencia textual, verbo detectado, confianza y motivo de revision.
+
+Para diffs resueltos, parciales o asistidos, la pantalla muestra estado,
+warnings, confianza y si intervino el fallback remoto.
 
 ## Proyectos detectados
 
@@ -157,9 +164,13 @@ Cuando los textos estan cargados, cada cambio muestra:
 - fuente vigente original;
 - fuente propuesta original;
 - estado de fuente: `LOADED`, `PENDING` o `NEEDS_REVIEW`.
+- estado de diff: `DIFF_VALIDATED`, `DIFF_PARTIAL`, `DIFF_AI_ASSISTED` o
+  `DIFF_UNRESOLVED`.
+- advertencias visibles cuando falta matching, fuente o validacion.
 
 Cuando los textos todavia no estan cargados, la seccion muestra un estado
-pendiente profesional y no inventa contenido legal.
+pendiente profesional. Si existe un diff parcial/asistido, se muestra con sus
+advertencias en vez de ocultarlo o presentarlo como validado.
 
 ## Ejecucion local
 

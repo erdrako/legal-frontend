@@ -622,6 +622,19 @@ h3 {
   gap: 6px;
 }
 
+.diff-warning-panel {
+  border: 1px solid #f3d58b;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: #5e3b00;
+  padding: 12px;
+}
+
+.diff-warning-panel p {
+  margin: 6px 0 0;
+  color: #5e3b00;
+}
+
 .diff-sources {
   border-top: 1px solid var(--line);
   padding-top: 14px;

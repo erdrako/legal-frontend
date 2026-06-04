@@ -39,6 +39,9 @@ assert(data.includes("officialAgendaSourceUrl"), "fixture data must expose offic
 assert(!data.includes("super-rigi"), "fixture data must not expose Diputados items during Senate vertical slice");
 assert(!data.includes("diputados.gob.ar"), "fixture data must not depend on Diputados during Senate vertical slice");
 assert(js.includes("Comparacion articulo por articulo pendiente de carga"), "app.js must show pending diff state");
+assert(js.includes("diffStatusSummary"), "app.js must show diff status summary for staging proposals");
+assert(js.includes("formatDiffPublicStatus"), "app.js must render visible diff trust states");
+assert(css.includes(".diff-warning-panel"), "styles.css must style visible diff warnings");
 assert(html.includes("agenda-meta"), "index.html must include agenda metadata panel");
 assert(!js.includes("reforma-laboral-mvp-2026"), "app.js must not expose the old test proposal");
 assert(!html.includes("query-examples"), "index.html must not include quick-access query chips");
@@ -54,6 +57,7 @@ assert(opsHtml.includes("processor-list") && opsHtml.includes("job-list"), "ops.
 assert(opsHtml.includes("proyectos-detectados") && opsHtml.includes("review-list"), "ops.html must include detected projects and review sections");
 assert(opsHtml.includes("admin-token"), "ops.html must include local admin token input for protected actions");
 assert(opsHtml.includes("resolve-current-sources"), "ops.html must expose protected current source resolution action");
+assert(opsHtml.includes("resolve-diff-candidates"), "ops.html must expose protected diff resolution action");
 assert(opsHtml.includes("config.js"), "ops.html must load runtime config");
 assert(opsJs.includes("/processors/status"), "ops.js must load processor status from API");
 assert(opsJs.includes("/processing-queue"), "ops.js must load processing queue from API");
@@ -61,7 +65,9 @@ assert(opsJs.includes("/detected-projects"), "ops.js must load detected projects
 assert(opsJs.includes("/processing-review"), "ops.js must load review state from API");
 assert(opsJs.includes("/retry"), "ops.js must support protected job retry action");
 assert(opsJs.includes("/processing-review/affected-items/resolve-current-sources"), "ops.js must support protected current source resolution");
+assert(opsJs.includes("/processing-review/diffs/resolve"), "ops.js must support protected diff resolution");
 assert(opsJs.includes("detectionEvidence"), "ops.js must render affected legal item evidence");
+assert(opsJs.includes("resolvedDiffs"), "ops.js must render resolved diff cases");
 assert(opsJs.includes("No hay procesadores remotos registrados"), "ops.js must show empty processor state");
 assert(css.includes(".processor-card") && css.includes(".job-card"), "styles.css must style operational status cards");
 

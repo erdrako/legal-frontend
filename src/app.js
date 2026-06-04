@@ -263,11 +263,31 @@ function renderDebateSection() {
             <strong>Grupos afectados</strong>
             <span>${groups.length > 0 ? escapeHtml(groups.join(", ")) : "Sin grupos cargados"}</span>
           </div>
+          ${renderProposalProgress(proposal)}
           <button class="primary-action" type="button" data-open-proposal="${escapeHtml(proposal.id)}">Entender cambios</button>
         </article>
       `;
     })
     .join("");
+}
+
+function renderProposalProgress(proposal) {
+  const summary = proposal.diffStatusSummary;
+  if (!summary) {
+    return `
+      <div class="mini-list">
+        <strong>Comparacion</strong>
+        <span>${Number(proposal.diffCount ?? 0)} cambios cargados. Estado: ${escapeHtml(formatSourceStatus(proposal.sourceStatus))}</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="mini-list">
+      <strong>Comparacion</strong>
+      <span>${Number(summary.validated ?? 0)} validados | ${Number(summary.partial ?? 0)} parciales | ${Number(summary.assisted ?? 0)} asistidos | ${Number(summary.unresolved ?? 0)} no resueltos</span>
+    </div>
+  `;
 }
 
 function renderRecentSection() {
@@ -492,6 +512,8 @@ function renderDiffs(proposal) {
             </div>
             <div class="badge-row">
               ${isMatched ? '<span class="match-pill">Coincide con tu busqueda</span>' : ""}
+              ${item.publicStatus ? `<span class="status-pill warning">${escapeHtml(formatDiffPublicStatus(item.publicStatus))}</span>` : ""}
+              ${item.remoteAssisted ? '<span class="status-pill warning">Asistido por procesador remoto</span>' : ""}
               <span class="change-badge ${item.changeType.toLowerCase()}">${formatChangeType(item.changeType)}</span>
             </div>
           </div>
@@ -532,6 +554,8 @@ function renderDiffs(proposal) {
             </div>
           </div>
 
+          ${renderDiffWarnings(item)}
+
           <div class="diff-sources">
             <strong>Fuentes de este cambio</strong>
             <div class="source-links">
@@ -543,6 +567,21 @@ function renderDiffs(proposal) {
       `;
     })
     .join("");
+}
+
+function renderDiffWarnings(item) {
+  const warnings = item.validationWarnings ?? [];
+  if (!item.publicStatus && warnings.length === 0 && !item.confidence) {
+    return "";
+  }
+
+  return `
+    <div class="diff-warning-panel">
+      <strong>Estado de confianza</strong>
+      <p>${escapeHtml(formatDiffPublicStatus(item.publicStatus))}${item.confidence ? ` | Confianza: ${escapeHtml(item.confidence)}` : ""}</p>
+      ${warnings.length ? `<p>Advertencias: ${escapeHtml(warnings.join(", "))}</p>` : "<p>Sin advertencias criticas cargadas.</p>"}
+    </div>
+  `;
 }
 
 function renderOriginalSource(source, label) {
@@ -920,6 +959,17 @@ function formatDataStatus(value) {
   };
 
   return labels[value] ?? "Estado pendiente";
+}
+
+function formatDiffPublicStatus(value) {
+  const labels = {
+    DIFF_VALIDATED: "Comparacion validada",
+    DIFF_PARTIAL: "Comparacion parcial",
+    DIFF_AI_ASSISTED: "Comparacion asistida",
+    DIFF_UNRESOLVED: "Comparacion no resuelta"
+  };
+
+  return labels[value] ?? "Comparacion pendiente";
 }
 
 function formatDate(value) {
