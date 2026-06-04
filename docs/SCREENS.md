@@ -44,6 +44,70 @@ Muestra:
 
 No expone acciones administrativas, tokens ni enrolamiento desde el navegador.
 
+## Pantalla operativa de revision
+
+Pendiente planificado:
+
+```text
+/ops/review
+```
+
+Debe ser una vista interna para revisar casos que no pueden publicarse todavia.
+No reemplaza la home publica ni debe mostrar contenido pendiente como si fuera
+diff validado.
+
+Debe permitir filtrar y navegar:
+
+- jobs pendientes;
+- jobs fallidos;
+- casos `NEEDS_REVIEW`;
+- casos `NOT_COMPARABLE`;
+- propuestas sin texto vigente;
+- fuentes pendientes o rotas;
+- candidatos de diff sin matching articulo por articulo;
+- duplicados detectados por parser.
+
+Acciones esperadas:
+
+- reintentar job;
+- reencolar OCR/procesamiento;
+- reejecutar source resolution;
+- cargar o corregir fuente oficial;
+- marcar texto vigente como `NOT_APPLICABLE`;
+- aprobar o rechazar candidato de diff;
+- promover un diff al read model publico;
+- fusionar o ignorar duplicados.
+
+La pantalla debe mostrar siempre fuente, hash/estado cuando exista, parser o
+resolver usado y motivo de bloqueo.
+
+## Proyectos detectados
+
+Pendiente planificado:
+
+```text
+Proyectos detectados
+```
+
+Seccion navegable para leyes/proyectos propuestos capturados en staging,
+separada de "Cambios en debate" publico.
+
+Debe mostrar:
+
+- expediente;
+- camara;
+- comisiones;
+- fecha de tratamiento;
+- estado de fuente propuesta;
+- estado de texto vigente;
+- estado de procesamiento;
+- estado de revision;
+- link a fuente original;
+- acceso al detalle tecnico/revisable.
+
+Puede listar items no promovidos, pero con estado visible y sin presentarlos
+como comparaciones legales aprobadas.
+
 ## Reglas UX
 
 - El texto legal original debe estar siempre disponible.
