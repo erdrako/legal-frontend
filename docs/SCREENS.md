@@ -27,6 +27,23 @@ Secciones implementadas:
 - respuesta contextual cuando la busqueda coincide con temas, grupos o diffs
   concretos.
 
+## Pantalla operativa
+
+`ops.html` es una vista separada de lectura para el estado del procesamiento
+remoto. En Pages se accede como `https://lexmapa.linqorait.com/ops`. No forma
+parte de la home publica ni compite con el flujo principal de comparacion legal.
+
+Muestra:
+
+- procesadores registrados;
+- estado online/offline derivado del heartbeat;
+- tier, modelo y capacidades;
+- job actual;
+- conteos de cola;
+- jobs recientes.
+
+No expone acciones administrativas, tokens ni enrolamiento desde el navegador.
+
 ## Reglas UX
 
 - El texto legal original debe estar siempre disponible.

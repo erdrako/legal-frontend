@@ -79,6 +79,27 @@ La home esta organizada por secciones:
 
 Por ahora no usa accesos rapidos/chips debajo del buscador.
 
+## Estado operativo
+
+La pagina separada `ops.html` muestra una vista de lectura para el procesador
+remoto. En Cloudflare Pages queda disponible como:
+
+```text
+https://lexmapa.linqorait.com/ops
+```
+
+```text
+procesadores registrados
+ultimo heartbeat
+tier y modelo
+job actual
+conteos de cola
+jobs recientes
+```
+
+No permite enrolar procesadores ni crear jobs desde el navegador. Es una vista
+de monitoreo para el vertical slice tecnico del procesador remoto.
+
 ## Auditoria UX
 
 ```bash

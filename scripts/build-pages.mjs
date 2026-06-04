@@ -10,6 +10,7 @@ if (existsSync(outDir)) {
 
 mkdirSync(outDir, { recursive: true });
 cpSync(resolve("index.html"), resolve(outDir, "index.html"));
+cpSync(resolve("ops.html"), resolve(outDir, "ops.html"));
 cpSync(resolve("src"), resolve(outDir, "src"), { recursive: true });
 writeFileSync(
   resolve(outDir, "config.js"),

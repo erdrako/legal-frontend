@@ -8,7 +8,9 @@ const outputBase = resolve(outputBaseArg?.split("=")[1] ?? "reports/ux-audit.lat
 
 const files = {
   html: readFileSync(resolve("index.html"), "utf8"),
+  opsHtml: readFileSync(resolve("ops.html"), "utf8"),
   js: readFileSync(resolve("src/app.js"), "utf8"),
+  opsJs: readFileSync(resolve("src/ops.js"), "utf8"),
   data: readFileSync(resolve("src/senate-agenda-fixtures.js"), "utf8"),
   css: readFileSync(resolve("src/styles.css"), "utf8")
 };
@@ -280,6 +282,23 @@ addCheck({
   pass: !/https?:\/\/(?!lexmapa-api\.linqorait\.com)/i.test(files.html),
   evidence: "The static shell does not depend on third-party runtime assets.",
   recommendation: "Keep the MVP shell self-contained for Cloudflare Pages."
+});
+
+addCheck({
+  id: "remote-processor-status-page",
+  area: "Operations",
+  severity: "major",
+  pass:
+    files.opsHtml.includes("Estado operativo") &&
+    files.opsHtml.includes("processor-list") &&
+    files.opsHtml.includes("job-list") &&
+    files.opsJs.includes("/processors/status") &&
+    files.opsJs.includes("/processing-queue") &&
+    files.opsJs.includes("No hay procesadores remotos registrados") &&
+    files.css.includes(".processor-card") &&
+    files.css.includes(".job-card"),
+  evidence: "A separate operational page can show processor heartbeats and queue status without cluttering the public legal-diff home.",
+  recommendation: "Keep processor controls out of the public UX; expose only read-only operational state."
 });
 
 const score = calculateScore(checks);

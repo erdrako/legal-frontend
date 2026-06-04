@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T13:08:51.590Z",
+  "generatedAt": "2026-06-04T00:42:12.736Z",
   "target": "legal-frontend",
   "score": 100,
   "status": "PASS",
@@ -17,7 +17,7 @@
       "area": "Discovery",
       "severity": "critical",
       "pass": true,
-      "evidence": "Home exposes a natural-language search form for the MVP question.",
+      "evidence": "Home exposes a natural-language search form for real agenda items.",
       "recommendation": "Keep the first action centered on a plain-language question."
     },
     {
@@ -33,8 +33,16 @@
       "area": "Discovery",
       "severity": "critical",
       "pass": true,
-      "evidence": "Search results can explain why a proposal matched, support shareable query URLs and highlight relevant diffs.",
+      "evidence": "Search results can explain why a proposal matched and support shareable query URLs.",
       "recommendation": "Keep natural-language search connected to concrete changes, not only proposal titles."
+    },
+    {
+      "id": "real-agenda-items",
+      "area": "Data trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The productive UI seed uses official Senate agenda items and no longer exposes fictional or Diputados data in this vertical slice.",
+      "recommendation": "Keep test/demo data out of the user-facing home."
     },
     {
       "id": "recent-empty-state",
@@ -93,6 +101,14 @@
       "recommendation": "Keep trust metadata visible without requiring a technical view."
     },
     {
+      "id": "agenda-source-links",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Agenda metadata and original source link fields are visible in the detail flow.",
+      "recommendation": "Keep agenda/citation/original text source states separate."
+    },
+    {
       "id": "stable-legal-dates",
       "area": "Trust",
       "severity": "major",
@@ -115,6 +131,14 @@
       "pass": true,
       "evidence": "Missing original links are explicit and visible.",
       "recommendation": "Never hide or invent missing original source links."
+    },
+    {
+      "id": "pending-diff-visible",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The UI has an explicit empty state for proposals without loaded legal texts.",
+      "recommendation": "Do not show article-level comparisons until source texts are loaded."
     },
     {
       "id": "no-personalized-legal-advice",
@@ -163,6 +187,14 @@
       "pass": true,
       "evidence": "The static shell does not depend on third-party runtime assets.",
       "recommendation": "Keep the MVP shell self-contained for Cloudflare Pages."
+    },
+    {
+      "id": "remote-processor-status-page",
+      "area": "Operations",
+      "severity": "major",
+      "pass": true,
+      "evidence": "A separate operational page can show processor heartbeats and queue status without cluttering the public legal-diff home.",
+      "recommendation": "Keep processor controls out of the public UX; expose only read-only operational state."
     }
   ]
 }

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LexMapa - Estado operativo</title>
+    <link rel="stylesheet" href="./src/styles.css">
+  </head>
+  <body>
+    <header class="top-nav">
+      <a class="brand-link" href="./index.html#buscar" aria-label="Volver a LexMapa">
+        <span class="brand-mark" aria-hidden="true">LM</span>
+        <span>LexMapa</span>
+      </a>
+      <nav class="nav-list" aria-label="Navegacion operativa">
+        <a href="#procesadores">Procesadores</a>
+        <a href="#cola">Cola</a>
+        <a href="./index.html">Vista publica</a>
+      </nav>
+    </header>
+
+    <main class="workspace ops-shell">
+      <section class="hero-section ops-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Estado operativo</p>
+          <h1>Procesamiento remoto de LexMapa.</h1>
+          <p>
+            Vista interna de lectura para verificar procesadores conectados, trabajos pendientes y resultados que necesitan revision.
+          </p>
+        </div>
+        <div class="refresh-row">
+          <button class="primary-action" type="button" id="refresh-status">Actualizar estado</button>
+          <span class="section-note" id="status-updated">Sin datos cargados</span>
+        </div>
+      </section>
+
+      <section class="home-section" id="procesadores">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pull remoto</p>
+            <h2>Procesadores</h2>
+          </div>
+          <span class="section-note" id="processor-count">0 registrados</span>
+        </div>
+        <div class="processor-grid" id="processor-list"></div>
+      </section>
+
+      <section class="home-section" id="cola">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">D1 ingestion</p>
+            <h2>Cola de procesamiento</h2>
+          </div>
+          <span class="section-note">Jobs recientes y pendientes</span>
+        </div>
+        <div class="metric-row" id="queue-metrics"></div>
+        <div class="job-list" id="job-list"></div>
+      </section>
+    </main>
+
+    <script src="./config.js"></script>
+    <script type="module" src="./src/ops.js"></script>
+  </body>
+</html>

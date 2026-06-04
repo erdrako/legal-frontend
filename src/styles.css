@@ -673,6 +673,105 @@ h3 {
   margin-top: 0;
 }
 
+.ops-shell {
+  max-width: 1180px;
+}
+
+.ops-hero {
+  border-top: 4px solid var(--teal);
+}
+
+.refresh-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.metric-row,
+.processor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-card,
+.processor-card,
+.job-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfd;
+}
+
+.metric-card {
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.metric-card span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.metric-card strong {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.processor-card,
+.job-card {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.status-dot.online {
+  background: var(--green);
+}
+
+.status-dot.busy {
+  background: var(--amber);
+}
+
+.status-dot.offline {
+  background: var(--red);
+}
+
+.job-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ops-job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.mono-text {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  overflow-wrap: anywhere;
+}
+
+.ops-source-link {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 @media (max-width: 980px) {
   .top-nav {
     align-items: flex-start;
@@ -689,7 +788,9 @@ h3 {
   .detail-grid,
   .agenda-meta,
   .legal-compare,
-  .trust-split {
+  .trust-split,
+  .metric-row,
+  .processor-grid {
     grid-template-columns: 1fr;
   }
 

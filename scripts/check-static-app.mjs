@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 
 const html = readFileSync("index.html", "utf8");
+const opsHtml = readFileSync("ops.html", "utf8");
 const js = readFileSync("src/app.js", "utf8");
+const opsJs = readFileSync("src/ops.js", "utf8");
 const data = readFileSync("src/senate-agenda-fixtures.js", "utf8");
 const css = readFileSync("src/styles.css", "utf8");
 const config = readFileSync("config.js", "utf8");
@@ -47,6 +49,13 @@ assert(css.includes(".matched-diff"), "styles.css must highlight query-matched d
 assert(css.includes(".capture-search"), "styles.css must support contextual search screenshots");
 assert(css.includes(".agenda-meta"), "styles.css must style agenda metadata");
 assert(css.includes("@media"), "styles.css must include responsive rules");
+assert(opsHtml.includes("Estado operativo"), "ops.html must expose operational status page");
+assert(opsHtml.includes("processor-list") && opsHtml.includes("job-list"), "ops.html must include processor and queue containers");
+assert(opsHtml.includes("config.js"), "ops.html must load runtime config");
+assert(opsJs.includes("/processors/status"), "ops.js must load processor status from API");
+assert(opsJs.includes("/processing-queue"), "ops.js must load processing queue from API");
+assert(opsJs.includes("No hay procesadores remotos registrados"), "ops.js must show empty processor state");
+assert(css.includes(".processor-card") && css.includes(".job-card"), "styles.css must style operational status cards");
 
 console.log("Static app checks passed.");
 
