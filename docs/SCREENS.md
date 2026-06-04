@@ -72,6 +72,8 @@ Permite navegar:
 Acciones esperadas:
 
 - reintentar job: implementado con token operativo;
+- resolver fuente vigente oficial para leyes afectadas pendientes:
+  implementado con token operativo;
 - reencolar OCR/procesamiento: pendiente;
 - reejecutar source resolution: pendiente;
 - cargar o corregir fuente oficial: pendiente;
@@ -82,6 +84,9 @@ Acciones esperadas:
 
 La pantalla debe mostrar siempre fuente, hash/estado cuando exista, parser o
 resolver usado y motivo de bloqueo.
+
+Para normas afectadas detectadas automaticamente, la pantalla muestra referencia
+canonica, evidencia textual, verbo detectado, confianza y motivo de revision.
 
 ## Proyectos detectados
 

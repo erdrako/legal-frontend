@@ -34,10 +34,19 @@ document.getElementById("clear-admin-token").addEventListener("click", () => {
   render();
 });
 
+document.getElementById("resolve-current-sources").addEventListener("click", () => {
+  resolveCurrentSources();
+});
+
 document.addEventListener("click", (event) => {
   const retryButton = event.target.closest("[data-retry-job]");
   if (retryButton) {
     retryJob(retryButton.dataset.retryJob);
+  }
+
+  const resolveButton = event.target.closest("[data-resolve-current-source]");
+  if (resolveButton) {
+    resolveCurrentSources([resolveButton.dataset.resolveCurrentSource]);
   }
 });
 
@@ -308,10 +317,14 @@ function renderReview() {
     })),
     ...(review.affectedLegalItems ?? []).map((item) => ({
       type: "Texto vigente pendiente",
-      title: item.title,
+      title: item.canonicalReferenceText ?? item.title,
       status: item.sourceStatus,
       id: item.id,
-      note: item.notes
+      note: item.reviewReason ?? item.notes,
+      canonical: item.canonicalReferenceText,
+      evidence: item.detectionEvidence,
+      currentSource: item.currentSource,
+      resolveSource: true
     })),
     ...(review.candidates ?? []).map((candidate) => ({
       type: "Candidato de diff",
@@ -343,8 +356,12 @@ function renderReview() {
           </div>
           <h3>${escapeHtml(item.title ?? item.id)}</h3>
           <p class="small-muted mono-text">${escapeHtml(item.id)}</p>
+          ${item.canonical ? `<p class="small-muted">Referencia canonica: ${escapeHtml(item.canonical)}</p>` : ""}
           ${item.note ? `<p class="warning-text">${escapeHtml(item.note)}</p>` : ""}
+          ${renderEvidence(item.evidence)}
+          ${renderCurrentSource(item.currentSource)}
           ${item.retry ? `<button class="secondary-action ops-source-link" type="button" data-retry-job="${escapeHtml(item.id)}">Reintentar job</button>` : ""}
+          ${item.resolveSource ? `<button class="secondary-action ops-source-link" type="button" data-resolve-current-source="${escapeHtml(item.id)}">Resolver fuente vigente</button>` : ""}
         </article>
       `
     )
@@ -377,6 +394,74 @@ async function retryJob(jobId) {
     state.actionMessage = "No se pudo reencolar el job. Revisar token o API.";
     render();
   }
+}
+
+async function resolveCurrentSources(affectedLegalItemIds = []) {
+  if (!state.adminToken) {
+    state.actionMessage = "Para resolver fuentes vigentes, carga primero el token operativo.";
+    render();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${state.apiBase.replace(/\/$/, "")}/processing-review/affected-items/resolve-current-sources`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${state.adminToken}`,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        affectedLegalItemIds,
+        limit: affectedLegalItemIds.length ? affectedLegalItemIds.length : 8
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Current source resolution failed with HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    state.actionMessage = `Fuentes vigentes: ${payload.counters?.resolved ?? 0} resueltas, ${payload.counters?.pending ?? 0} pendientes`;
+    await loadStatus();
+  } catch (error) {
+    console.warn(error);
+    state.actionMessage = "No se pudo resolver fuentes vigentes. Revisar token, API o fuente oficial.";
+    render();
+  }
+}
+
+function renderEvidence(evidence) {
+  if (!evidence || Object.keys(evidence).length === 0) {
+    return "";
+  }
+
+  const parts = [
+    evidence.detectedVerb ? `Verbo: ${evidence.detectedVerb}` : null,
+    evidence.confidence ? `Confianza: ${evidence.confidence}` : null,
+    evidence.sourceProvisionId ? `Provision: ${evidence.sourceProvisionId}` : null
+  ].filter(Boolean);
+
+  return `
+    <div class="mini-list">
+      <strong>Evidencia</strong>
+      <span>${escapeHtml(parts.join(" | ") || "Referencia detectada")}</span>
+      ${evidence.evidenceText ? `<span>${escapeHtml(evidence.evidenceText)}</span>` : ""}
+    </div>
+  `;
+}
+
+function renderCurrentSource(source) {
+  if (!source || Object.keys(source).length === 0) {
+    return "";
+  }
+
+  return `
+    <div class="mini-list">
+      <strong>Fuente vigente</strong>
+      <span>${escapeHtml(source.status ?? "PENDING")}${source.lawNumber ? ` | Ley ${escapeHtml(source.lawNumber)}` : ""}</span>
+      ${source.sourceUrl ? `<a class="secondary-action ops-source-link" href="${escapeHtml(source.sourceUrl)}" target="_blank" rel="noreferrer">Abrir fuente vigente</a>` : ""}
+    </div>
+  `;
 }
 
 function emptyCounts() {

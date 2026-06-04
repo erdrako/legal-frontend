@@ -785,6 +785,10 @@ h3 {
   gap: 8px;
 }
 
+.ops-protected-actions {
+  margin-top: 12px;
+}
+
 .status-pill.warning {
   background: #fff4d6;
   color: #7a4b00;

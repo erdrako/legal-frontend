@@ -296,7 +296,10 @@ addCheck({
     files.opsJs.includes("/processing-queue") &&
     files.opsJs.includes("/detected-projects") &&
     files.opsJs.includes("/processing-review") &&
+    files.opsJs.includes("/processing-review/affected-items/resolve-current-sources") &&
+    files.opsJs.includes("detectionEvidence") &&
     files.opsJs.includes("No hay procesadores remotos registrados") &&
+    files.opsHtml.includes("resolve-current-sources") &&
     files.opsHtml.includes("proyectos-detectados") &&
     files.opsHtml.includes("review-list") &&
     files.css.includes(".processor-card") &&
