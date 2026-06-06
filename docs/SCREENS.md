@@ -12,21 +12,21 @@ La primera pantalla no debe depender de numeros de ley, articulos o jerga
 juridica. Debe iniciar desde una pregunta simple y llevar a una comparacion
 legal clara.
 
-Secciones implementadas:
+La UX publica aprobada se organiza en vistas diferenciadas con navegacion
+simulada por query params:
 
-- hero con buscador en lenguaje simple;
-- cambios en debate;
-- cambios recientes;
-- explorar por tema;
-- normas importantes;
-- como leer LexMapa;
-- detalle de propuesta/reforma;
-- datos de agenda: camara, fecha de tratamiento y comisiones;
-- comparacion texto vigente vs texto propuesto cuando esta cargada;
-- estados de comparacion visible: validada, parcial, asistida o no resuelta;
-- fuentes originales de la propuesta y de cada diff;
-- respuesta contextual cuando la busqueda coincide con temas, grupos o diffs
-  concretos.
+- `?view=home`
+- `?view=resultados&q=...`
+- `?view=cambios`
+- `?view=cambio&id=...`
+- `?view=temas`
+- `?view=tema&tema=...`
+- `?view=como-leer`
+- `?view=fuentes`
+
+La home debe ser breve y explicativa. No debe concentrar todo el detalle del
+producto. "Normas importantes" queda fuera porque introduce un criterio
+editorial arbitrario.
 
 ## Pantalla operativa
 
@@ -131,6 +131,11 @@ parser quedan fuera del listado accionable y se conservan en revision operativa.
 - No hay accesos rapidos/chips destacados debajo del buscador en esta etapa.
 - Una pregunta especifica debe orientar al usuario hacia los diffs relacionados,
   no solo abrir la propuesta general.
+- La busqueda publica navega a una vista de resultados, no scrollea dentro de
+  la home.
+- El detalle de cambio usa tabs para separar `Resumen`, `Comparacion`,
+  `Fuentes` y `Estado del dato`.
+- La comparacion usa acordeones por diff.
 
 ## Busqueda
 
@@ -147,6 +152,18 @@ Preguntas esperadas para el MVP:
 Cuando una busqueda coincide con un tema, grupo impactado o diff especifico, la
 vista debe mostrar una respuesta breve y orientar a la propuesta relacionada.
 Tambien puede abrirse una busqueda desde URL usando `?q=`.
+
+## Vista Detalle
+
+El detalle se organiza por tabs:
+
+- `Resumen`: primera vista; explica en simple y muestra quien podria verse
+  alcanzado.
+- `Comparacion`: muestra resumen de diffs y acordeones por cambio.
+- `Fuentes`: separa agenda, expediente, texto vigente, texto propuesto y
+  fuentes pendientes.
+- `Estado del dato`: explica confianza, advertencias, alcance y procesamiento
+  asistido.
 
 ## Vista diff
 

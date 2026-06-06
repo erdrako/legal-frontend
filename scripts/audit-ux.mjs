@@ -18,19 +18,20 @@ const files = {
 const checks = [];
 
 addCheck({
-  id: "home-six-sections",
+  id: "layered-public-navigation",
   area: "Information architecture",
   severity: "critical",
-  pass: [
-    'id="buscar"',
-    'id="cambios-en-debate"',
-    'id="cambios-recientes"',
-    'id="temas"',
-    'id="normas"',
-    'id="como-leer"'
-  ].every((token) => files.html.includes(token)),
-  evidence: "Home is organized into hero, debate, recent, topics, norms and how-to-read sections.",
-  recommendation: "Keep the home structured by sections instead of shortcuts."
+  pass:
+    files.html.includes("app-root") &&
+    files.html.includes("global-search-form") &&
+    files.html.includes('data-view="home"') &&
+    files.html.includes('data-view="cambios"') &&
+    files.html.includes('data-view="temas"') &&
+    files.html.includes('data-view="como-leer"') &&
+    files.html.includes('data-view="fuentes"') &&
+    files.js.includes("ALLOWED_VIEWS"),
+  evidence: "The public product is organized as small simulated views instead of a single dense page.",
+  recommendation: "Keep the navigation split into home, results, laws in treatment, topics, detail, how-to-read and sources."
 });
 
 addCheck({
@@ -38,11 +39,27 @@ addCheck({
   area: "Discovery",
   severity: "critical",
   pass:
-    files.html.includes("search-form") &&
-    files.html.includes("Que se trata sobre Ley Hojarasca") &&
-    files.js.includes("runSearch"),
-  evidence: "Home exposes a natural-language search form for real agenda items.",
-  recommendation: "Keep the first action centered on a plain-language question."
+    files.html.includes("global-search-form") &&
+    files.js.includes("renderSearchResults") &&
+    files.js.includes("/search?q=") &&
+    files.js.includes("resultKind"),
+  evidence: "Search is a first-class flow and relies on backend result classification.",
+  recommendation: "Keep search centered on plain-language queries and avoid frontend-only semantic guessing."
+});
+
+addCheck({
+  id: "safe-route-and-query-handling",
+  area: "Security",
+  severity: "critical",
+  pass:
+    files.js.includes("MAX_QUERY_LENGTH") &&
+    files.js.includes("normalizeUserQuery") &&
+    files.js.includes("encodeURIComponent") &&
+    files.js.includes("ALLOWED_VIEWS") &&
+    files.js.includes("DETAIL_TABS") &&
+    files.js.includes("escapeHtml"),
+  evidence: "User-provided view, tab, id and query values are whitelisted, bounded or escaped before rendering or API calls.",
+  recommendation: "Keep route and query validation explicit as new views are added."
 });
 
 addCheck({
@@ -50,166 +67,117 @@ addCheck({
   area: "Discovery",
   severity: "critical",
   pass: !files.html.includes("query-examples") && !files.html.includes("query-chip") && !files.js.includes("renderQueryExamples"),
-  evidence: "Home does not render quick-access chips below the search box.",
-  recommendation: "Organize discovery through sections, not highlighted shortcut chips."
+  evidence: "Home does not render shortcut chips below the search box.",
+  recommendation: "Organize discovery through views and sections, not highlighted shortcuts."
 });
 
 addCheck({
-  id: "query-aware-result-focus",
-  area: "Discovery",
-  severity: "critical",
-  pass:
-    files.html.includes("search-answer-panel") &&
-    files.js.includes("matchedDiffIds") &&
-    files.js.includes("initialQueryFromUrl") &&
-    files.js.includes("Encontramos un proyecto en debate") &&
-    files.css.includes(".matched-diff") &&
-    files.css.includes(".capture-search"),
-  evidence: "Search results can explain why a proposal matched and support shareable query URLs.",
-  recommendation: "Keep natural-language search connected to concrete changes, not only proposal titles."
-});
-
-addCheck({
-  id: "real-agenda-items",
-  area: "Data trust",
-  severity: "critical",
-  pass:
-    files.data.includes("REAL_AGENDA_ITEM") &&
-    files.data.includes("ley-hojarasca") &&
-    files.data.includes("biocombustibles") &&
-    files.data.includes("parque-marino-monte-leon") &&
-    files.data.includes("officialAgendaSourceUrl") &&
-    files.data.includes("proposedTextOriginalUrls") &&
-    !files.data.includes("super-rigi") &&
-    !files.data.includes("diputados.gob.ar") &&
-    !files.data.includes("reforma-laboral-mvp-2026"),
-  evidence: "The productive UI seed uses official Senate agenda items and no longer exposes fictional or Diputados data in this vertical slice.",
-  recommendation: "Keep test/demo data out of the user-facing home."
-});
-
-addCheck({
-  id: "recent-empty-state",
+  id: "neutral-public-taxonomy",
   area: "Information architecture",
-  severity: "major",
-  pass: files.js.includes("No hay cambios recientes cargados todavia"),
-  evidence: "Recent changes has an explicit empty state instead of invented data.",
-  recommendation: "Keep empty states honest while data is incomplete."
+  severity: "critical",
+  pass:
+    files.js.includes("Leyes en tratamiento") &&
+    files.js.includes("Leyes tratadas") &&
+    !files.html.includes("Normas importantes") &&
+    !files.js.includes("Normas importantes"),
+  evidence: "The UI uses neutral terms and removes the arbitrary important-norms section.",
+  recommendation: "Avoid ranking legal materials as important unless a governed criterion is approved."
 });
 
 addCheck({
-  id: "summary-before-legal-text",
+  id: "home-stays-light",
   area: "Comprehension",
-  severity: "critical",
-  pass: files.html.indexOf("detail-summary") > -1 && files.html.indexOf("detail-summary") < files.html.indexOf("diff-list"),
-  evidence: "The screen gives a plain summary before the article-by-article diff.",
-  recommendation: "Do not lead with dense legal text."
-});
-
-addCheck({
-  id: "important-norms-secondary",
-  area: "Information architecture",
   severity: "major",
-  pass: files.html.includes("Consulta de base, no flujo principal") && files.css.includes(".quiet-section"),
-  evidence: "Important norms is visually marked as reference, not the main product flow.",
-  recommendation: "Keep norms below debate/recent changes and visually quieter."
-});
-
-addCheck({
-  id: "affected-topics-and-groups",
-  area: "Impact",
-  severity: "critical",
   pass:
-    files.html.includes("topics-list") &&
-    files.html.includes("groups-list") &&
-    files.js.includes("renderTopics") &&
-    files.js.includes("renderGroups"),
-  evidence: "The UI separates affected topics from impacted groups.",
-  recommendation: "Keep topics and groups visible before detailed legal comparison."
+    files.js.includes("renderHomePage") &&
+    files.js.includes("Informacion legal en capas") &&
+    files.js.includes("benefit-grid") &&
+    files.js.includes("topicCatalog.slice(0, 6)") &&
+    files.js.includes("Ver todas"),
+  evidence: "The home introduces the product and sends users to separate views for deeper reading.",
+  recommendation: "Do not move dense legal comparisons back onto the home page."
 });
 
 addCheck({
-  id: "side-by-side-diff",
+  id: "detail-tabs",
   area: "Comparison",
   severity: "critical",
   pass:
-    files.html.includes("diff-list") &&
-    files.css.includes(".legal-compare") &&
-    files.js.includes("legal-text current") &&
-    files.js.includes("legal-text proposed"),
-  evidence: "Each change has current and proposed text in separate blocks.",
-  recommendation: "Preserve access to both legal texts in every diff item."
+    files.js.includes("renderTabButton") &&
+    files.js.includes("resumen") &&
+    files.js.includes("comparacion") &&
+    files.js.includes("fuentes") &&
+    files.js.includes("estado") &&
+    files.css.includes(".tabs") &&
+    files.css.includes(".tab-button"),
+  evidence: "Proposal detail is split into summary, comparison, sources and data status tabs.",
+  recommendation: "Use tabs for peer-level detail sections so the user chooses depth intentionally."
+});
+
+addCheck({
+  id: "diffs-use-accordions",
+  area: "Comparison",
+  severity: "critical",
+  pass:
+    files.js.includes("<details class=\"diff-accordion\"") &&
+    files.js.includes("<summary>") &&
+    files.css.includes(".diff-accordion") &&
+    files.css.includes(".diff-accordion[open]"),
+  evidence: "Individual article-level diffs are collapsed into accordions.",
+  recommendation: "Keep individual diff units expandable so long legal text does not dominate the page."
 });
 
 addCheck({
   id: "bounded-legal-text-panels",
   area: "Comparison",
-  severity: "major",
+  severity: "critical",
   pass:
     files.js.includes("legal-text-body") &&
     files.css.includes(".legal-text-body") &&
     files.css.includes("overflow: auto") &&
-    files.css.includes("scrollbar-gutter"),
-  evidence: "Long legal texts are constrained inside scrollable panels.",
-  recommendation: "Keep original texts available without turning proposal detail into endless page scrolling."
+    files.css.includes("scrollbar-gutter") &&
+    files.css.includes("overscroll-behavior"),
+  evidence: "Long current/proposed legal texts are constrained inside internal scroll panels.",
+  recommendation: "Keep original legal text available without turning detail pages into endless scrolling."
+});
+
+addCheck({
+  id: "summary-before-comparison",
+  area: "Comprehension",
+  severity: "critical",
+  pass:
+    files.js.includes("return renderSummaryTab(proposal);") &&
+    files.js.includes("const tab = state.route.params.tab || \"resumen\"") &&
+    files.js.includes("En simple"),
+  evidence: "The default detail tab gives a plain-language summary before comparison.",
+  recommendation: "Do not lead non-legal users directly into dense legal text."
 });
 
 addCheck({
   id: "plain-explanation-per-change",
   area: "Comprehension",
   severity: "critical",
-  pass: files.js.includes("Explicacion simple") && files.js.includes("Interpretacion orientativa") && files.js.includes("practicalImpact"),
-  evidence: "Every diff renders what changes and what it means.",
-  recommendation: "Do not collapse practical impact into technical legal labels."
+  pass:
+    files.js.includes("Explicacion simple") &&
+    files.js.includes("Impacto orientativo") &&
+    files.js.includes("practicalImpact"),
+  evidence: "Every loaded diff keeps what-changes and what-it-means explanations visible.",
+  recommendation: "Keep simple explanation separate from original text and source blocks."
 });
 
 addCheck({
-  id: "source-status-scope",
+  id: "original-sources-visible",
   area: "Trust",
   severity: "critical",
   pass:
-    files.html.includes("proposal-sources") &&
-    files.js.includes("originalSources") &&
-    files.js.includes("sourceStatus") &&
-    files.js.includes("dataStatus") &&
-    files.js.includes("legalAdviceWarning"),
-  evidence: "Source, data status, scope and legal warning are rendered.",
-  recommendation: "Keep trust metadata visible without requiring a technical view."
-});
-
-addCheck({
-  id: "agenda-source-links",
-  area: "Trust",
-  severity: "critical",
-  pass:
-    files.html.includes("agenda-meta") &&
-    files.js.includes("renderAgendaMeta") &&
-    files.js.includes("officialAgendaSourceUrl") &&
-    files.js.includes("officialCitationUrl") &&
+    files.js.includes("Fuentes de este cambio") &&
+    files.js.includes("renderSourcesTab") &&
+    files.js.includes("originalSource") &&
     files.js.includes("currentLawOriginalUrl") &&
-    files.js.includes("proposedTextOriginalUrl"),
-  evidence: "Agenda metadata and original source link fields are visible in the detail flow.",
-  recommendation: "Keep agenda/citation/original text source states separate."
-});
-
-addCheck({
-  id: "stable-legal-dates",
-  area: "Trust",
-  severity: "major",
-  pass: files.js.includes('timeZone: "UTC"') && files.js.includes("formatDate"),
-  evidence: "Legal update dates are formatted without local timezone day drift.",
-  recommendation: "Keep date-only legal metadata stable across locales."
-});
-
-addCheck({
-  id: "diff-original-sources",
-  area: "Trust",
-  severity: "critical",
-  pass:
-    files.js.includes("currentVersion.originalSource") &&
-    files.js.includes("proposedVersion.originalSource") &&
-    files.js.includes("Fuentes de este cambio"),
-  evidence: "Each diff renders sources for current and proposed versions.",
-  recommendation: "Every diff must expose both original source states."
+    files.js.includes("proposedTextOriginalUrl") &&
+    files.js.includes("officialAgendaSourceUrl"),
+  evidence: "Proposal and diff views expose agenda, current text and proposed text source states.",
+  recommendation: "Never hide source state behind interpretation."
 });
 
 addCheck({
@@ -218,7 +186,7 @@ addCheck({
   severity: "critical",
   pass: files.data.includes("Fuente original pendiente de carga") && files.js.includes("PENDING_SOURCE_TEXT"),
   evidence: "Missing original links are explicit and visible.",
-  recommendation: "Never hide or invent missing original source links."
+  recommendation: "Keep pending source states visible instead of inventing links."
 });
 
 addCheck({
@@ -229,7 +197,7 @@ addCheck({
     files.js.includes("Comparacion articulo por articulo pendiente de carga") &&
     files.js.includes("LexMapa no inventa diffs legales"),
   evidence: "The UI has an explicit empty state for proposals without loaded legal texts.",
-  recommendation: "Do not show article-level comparisons until source texts are loaded."
+  recommendation: "Show pending comparison states transparently and keep source blocks accessible."
 });
 
 addCheck({
@@ -246,14 +214,41 @@ addCheck({
 });
 
 addCheck({
+  id: "real-senate-agenda-items",
+  area: "Data trust",
+  severity: "critical",
+  pass:
+    files.data.includes("REAL_AGENDA_ITEM") &&
+    files.data.includes("ley-hojarasca") &&
+    files.data.includes("biocombustibles") &&
+    files.data.includes("parque-marino-monte-leon") &&
+    files.data.includes("officialAgendaSourceUrl") &&
+    !files.data.includes("super-rigi") &&
+    !files.data.includes("diputados.gob.ar") &&
+    !files.data.includes("reforma-laboral-mvp-2026"),
+  evidence: "The productive public seed uses official Senate agenda items and no fictional or Diputados data in this vertical slice.",
+  recommendation: "Keep demo/test data out of the public product."
+});
+
+addCheck({
+  id: "recent-empty-state",
+  area: "Information architecture",
+  severity: "major",
+  pass: files.js.includes("Todavia no hay cambios recientes cargados"),
+  evidence: "Already-treated laws have an honest empty state instead of invented data.",
+  recommendation: "Keep empty states explicit while datasets are incomplete."
+});
+
+addCheck({
   id: "no-personalized-legal-advice",
   area: "Trust",
   severity: "critical",
   pass:
     files.data.includes("no brinda asesoramiento legal personalizado") &&
+    files.js.includes("LexMapa no brinda asesoramiento legal personalizado") &&
     !/en tu caso|debes hacer|tenes que hacer/i.test(files.html + files.js + files.data),
   evidence: "The interface warns that it is not personalized legal advice.",
-  recommendation: "Avoid imperative advice for a user's individual situation."
+  recommendation: "Avoid imperative advice for individual legal situations."
 });
 
 addCheck({
@@ -264,9 +259,10 @@ addCheck({
     files.html.includes('<html lang="es">') &&
     files.html.includes('aria-label="Navegacion principal"') &&
     files.html.includes('class="sr-only"') &&
-    countMatches(files.html, /<h1[>\s]/g) === 1,
-  evidence: "The static page has language, landmarks, hidden labels and one H1.",
-  recommendation: "Keep labels and document structure explicit as the UI grows."
+    files.html.includes('tabindex="-1"') &&
+    files.js.includes("aria-selected"),
+  evidence: "The shell has language, landmarks, hidden labels, focus target and tab states.",
+  recommendation: "Keep accessible labels and focus management explicit as views grow."
 });
 
 addCheck({
@@ -274,10 +270,13 @@ addCheck({
   area: "Comprehension",
   severity: "major",
   pass:
-    ["Antes", "Despues", "Que cambia", "Que significa"].every((label) => files.html.includes(label)) &&
-    files.html.includes("No reemplaza asesoramiento legal profesional"),
-  evidence: "How-to-read section is brief and uses the four expected concepts.",
-  recommendation: "Keep the explanation short, visual and useful."
+    files.js.includes("Texto vigente") &&
+    files.js.includes("Texto propuesto") &&
+    files.js.includes("Comparacion") &&
+    files.js.includes("Estado del dato") &&
+    files.js.includes("renderHowToReadPage"),
+  evidence: "How-to-read is a brief visual guide rather than a dense explanation.",
+  recommendation: "Keep the guide short and focused on reading the interface."
 });
 
 addCheck({
@@ -287,8 +286,9 @@ addCheck({
   pass:
     countMatches(files.css, /@media/g) >= 2 &&
     files.css.includes(".legal-compare") &&
-    files.css.includes("grid-template-columns: 1fr"),
-  evidence: "CSS defines responsive breakpoints and collapses the diff layout.",
+    files.css.includes("grid-template-columns: 1fr") &&
+    files.css.includes(".header-search"),
+  evidence: "CSS defines responsive breakpoints, collapses dense grids and accounts for the global search.",
   recommendation: "Verify real mobile screenshots before production announcements."
 });
 
@@ -333,8 +333,8 @@ addCheck({
     files.opsHtml.includes("review-list") &&
     files.css.includes(".processor-card") &&
     files.css.includes(".job-card"),
-  evidence: "A separate operational page can show processor heartbeats, queue status, staging projects and review cases without cluttering the public legal-diff home.",
-  recommendation: "Keep protected actions token-gated and outside the public legal-diff UX."
+  evidence: "The operational page remains separate from the public legal-diff UX.",
+  recommendation: "Keep protected actions token-gated and outside the public reading flow."
 });
 
 const score = calculateScore(checks);

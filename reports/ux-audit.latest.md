@@ -1,6 +1,6 @@
 # LexMapa UX Audit
 
-Generated: 2026-06-04T00:42:12.736Z
+Generated: 2026-06-06T12:19:01.453Z
 
 Target: legal-frontend
 
@@ -12,30 +12,30 @@ Score: 100/100
 
 | Result | Severity | Area | Check | Evidence |
 |---|---|---|---|---|
-| PASS | critical | Information architecture | home-six-sections | Home is organized into hero, debate, recent, topics, norms and how-to-read sections. |
-| PASS | critical | Discovery | simple-language-search | Home exposes a natural-language search form for real agenda items. |
-| PASS | critical | Discovery | no-quick-access-chips | Home does not render quick-access chips below the search box. |
-| PASS | critical | Discovery | query-aware-result-focus | Search results can explain why a proposal matched and support shareable query URLs. |
-| PASS | critical | Data trust | real-agenda-items | The productive UI seed uses official Senate agenda items and no longer exposes fictional or Diputados data in this vertical slice. |
-| PASS | major | Information architecture | recent-empty-state | Recent changes has an explicit empty state instead of invented data. |
-| PASS | critical | Comprehension | summary-before-legal-text | The screen gives a plain summary before the article-by-article diff. |
-| PASS | major | Information architecture | important-norms-secondary | Important norms is visually marked as reference, not the main product flow. |
-| PASS | critical | Impact | affected-topics-and-groups | The UI separates affected topics from impacted groups. |
-| PASS | critical | Comparison | side-by-side-diff | Each change has current and proposed text in separate blocks. |
-| PASS | critical | Comprehension | plain-explanation-per-change | Every diff renders what changes and what it means. |
-| PASS | critical | Trust | source-status-scope | Source, data status, scope and legal warning are rendered. |
-| PASS | critical | Trust | agenda-source-links | Agenda metadata and original source link fields are visible in the detail flow. |
-| PASS | major | Trust | stable-legal-dates | Legal update dates are formatted without local timezone day drift. |
-| PASS | critical | Trust | diff-original-sources | Each diff renders sources for current and proposed versions. |
+| PASS | critical | Information architecture | layered-public-navigation | The public product is organized as small simulated views instead of a single dense page. |
+| PASS | critical | Discovery | simple-language-search | Search is a first-class flow and relies on backend result classification. |
+| PASS | critical | Security | safe-route-and-query-handling | User-provided view, tab, id and query values are whitelisted, bounded or escaped before rendering or API calls. |
+| PASS | critical | Discovery | no-quick-access-chips | Home does not render shortcut chips below the search box. |
+| PASS | critical | Information architecture | neutral-public-taxonomy | The UI uses neutral terms and removes the arbitrary important-norms section. |
+| PASS | major | Comprehension | home-stays-light | The home introduces the product and sends users to separate views for deeper reading. |
+| PASS | critical | Comparison | detail-tabs | Proposal detail is split into summary, comparison, sources and data status tabs. |
+| PASS | critical | Comparison | diffs-use-accordions | Individual article-level diffs are collapsed into accordions. |
+| PASS | critical | Comparison | bounded-legal-text-panels | Long current/proposed legal texts are constrained inside internal scroll panels. |
+| PASS | critical | Comprehension | summary-before-comparison | The default detail tab gives a plain-language summary before comparison. |
+| PASS | critical | Comprehension | plain-explanation-per-change | Every loaded diff keeps what-changes and what-it-means explanations visible. |
+| PASS | critical | Trust | original-sources-visible | Proposal and diff views expose agenda, current text and proposed text source states. |
 | PASS | critical | Trust | pending-source-visible | Missing original links are explicit and visible. |
 | PASS | critical | Trust | pending-diff-visible | The UI has an explicit empty state for proposals without loaded legal texts. |
+| PASS | critical | Trust | diff-status-transparency | Public proposal cards and diff cards expose validated, partial, assisted and unresolved states. |
+| PASS | critical | Data trust | real-senate-agenda-items | The productive public seed uses official Senate agenda items and no fictional or Diputados data in this vertical slice. |
+| PASS | major | Information architecture | recent-empty-state | Already-treated laws have an honest empty state instead of invented data. |
 | PASS | critical | Trust | no-personalized-legal-advice | The interface warns that it is not personalized legal advice. |
-| PASS | major | Accessibility | accessibility-basics | The static page has language, landmarks, hidden labels and one H1. |
-| PASS | major | Comprehension | brief-how-to-read | How-to-read section is brief and uses the four expected concepts. |
-| PASS | major | Responsive | responsive-layout | CSS defines responsive breakpoints and collapses the diff layout. |
+| PASS | major | Accessibility | accessibility-basics | The shell has language, landmarks, hidden labels, focus target and tab states. |
+| PASS | major | Comprehension | brief-how-to-read | How-to-read is a brief visual guide rather than a dense explanation. |
+| PASS | major | Responsive | responsive-layout | CSS defines responsive breakpoints, collapses dense grids and accounts for the global search. |
 | PASS | major | Visual | stable-readable-type | Typography avoids negative letter spacing and viewport-scaled font sizes. |
 | PASS | minor | Reliability | no-external-runtime-assets | The static shell does not depend on third-party runtime assets. |
-| PASS | major | Operations | remote-processor-status-page | A separate operational page can show processor heartbeats and queue status without cluttering the public legal-diff home. |
+| PASS | major | Operations | remote-processor-status-page | The operational page remains separate from the public legal-diff UX. |
 
 ## Follow-up
 

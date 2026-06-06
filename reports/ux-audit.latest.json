@@ -1,128 +1,104 @@
 {
-  "generatedAt": "2026-06-04T00:42:12.736Z",
+  "generatedAt": "2026-06-06T12:19:01.453Z",
   "target": "legal-frontend",
   "score": 100,
   "status": "PASS",
   "checks": [
     {
-      "id": "home-six-sections",
+      "id": "layered-public-navigation",
       "area": "Information architecture",
       "severity": "critical",
       "pass": true,
-      "evidence": "Home is organized into hero, debate, recent, topics, norms and how-to-read sections.",
-      "recommendation": "Keep the home structured by sections instead of shortcuts."
+      "evidence": "The public product is organized as small simulated views instead of a single dense page.",
+      "recommendation": "Keep the navigation split into home, results, laws in treatment, topics, detail, how-to-read and sources."
     },
     {
       "id": "simple-language-search",
       "area": "Discovery",
       "severity": "critical",
       "pass": true,
-      "evidence": "Home exposes a natural-language search form for real agenda items.",
-      "recommendation": "Keep the first action centered on a plain-language question."
+      "evidence": "Search is a first-class flow and relies on backend result classification.",
+      "recommendation": "Keep search centered on plain-language queries and avoid frontend-only semantic guessing."
+    },
+    {
+      "id": "safe-route-and-query-handling",
+      "area": "Security",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "User-provided view, tab, id and query values are whitelisted, bounded or escaped before rendering or API calls.",
+      "recommendation": "Keep route and query validation explicit as new views are added."
     },
     {
       "id": "no-quick-access-chips",
       "area": "Discovery",
       "severity": "critical",
       "pass": true,
-      "evidence": "Home does not render quick-access chips below the search box.",
-      "recommendation": "Organize discovery through sections, not highlighted shortcut chips."
+      "evidence": "Home does not render shortcut chips below the search box.",
+      "recommendation": "Organize discovery through views and sections, not highlighted shortcuts."
     },
     {
-      "id": "query-aware-result-focus",
-      "area": "Discovery",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "Search results can explain why a proposal matched and support shareable query URLs.",
-      "recommendation": "Keep natural-language search connected to concrete changes, not only proposal titles."
-    },
-    {
-      "id": "real-agenda-items",
-      "area": "Data trust",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "The productive UI seed uses official Senate agenda items and no longer exposes fictional or Diputados data in this vertical slice.",
-      "recommendation": "Keep test/demo data out of the user-facing home."
-    },
-    {
-      "id": "recent-empty-state",
+      "id": "neutral-public-taxonomy",
       "area": "Information architecture",
-      "severity": "major",
+      "severity": "critical",
       "pass": true,
-      "evidence": "Recent changes has an explicit empty state instead of invented data.",
-      "recommendation": "Keep empty states honest while data is incomplete."
+      "evidence": "The UI uses neutral terms and removes the arbitrary important-norms section.",
+      "recommendation": "Avoid ranking legal materials as important unless a governed criterion is approved."
     },
     {
-      "id": "summary-before-legal-text",
+      "id": "home-stays-light",
       "area": "Comprehension",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "The screen gives a plain summary before the article-by-article diff.",
-      "recommendation": "Do not lead with dense legal text."
-    },
-    {
-      "id": "important-norms-secondary",
-      "area": "Information architecture",
       "severity": "major",
       "pass": true,
-      "evidence": "Important norms is visually marked as reference, not the main product flow.",
-      "recommendation": "Keep norms below debate/recent changes and visually quieter."
+      "evidence": "The home introduces the product and sends users to separate views for deeper reading.",
+      "recommendation": "Do not move dense legal comparisons back onto the home page."
     },
     {
-      "id": "affected-topics-and-groups",
-      "area": "Impact",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "The UI separates affected topics from impacted groups.",
-      "recommendation": "Keep topics and groups visible before detailed legal comparison."
-    },
-    {
-      "id": "side-by-side-diff",
+      "id": "detail-tabs",
       "area": "Comparison",
       "severity": "critical",
       "pass": true,
-      "evidence": "Each change has current and proposed text in separate blocks.",
-      "recommendation": "Preserve access to both legal texts in every diff item."
+      "evidence": "Proposal detail is split into summary, comparison, sources and data status tabs.",
+      "recommendation": "Use tabs for peer-level detail sections so the user chooses depth intentionally."
+    },
+    {
+      "id": "diffs-use-accordions",
+      "area": "Comparison",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Individual article-level diffs are collapsed into accordions.",
+      "recommendation": "Keep individual diff units expandable so long legal text does not dominate the page."
+    },
+    {
+      "id": "bounded-legal-text-panels",
+      "area": "Comparison",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Long current/proposed legal texts are constrained inside internal scroll panels.",
+      "recommendation": "Keep original legal text available without turning detail pages into endless scrolling."
+    },
+    {
+      "id": "summary-before-comparison",
+      "area": "Comprehension",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The default detail tab gives a plain-language summary before comparison.",
+      "recommendation": "Do not lead non-legal users directly into dense legal text."
     },
     {
       "id": "plain-explanation-per-change",
       "area": "Comprehension",
       "severity": "critical",
       "pass": true,
-      "evidence": "Every diff renders what changes and what it means.",
-      "recommendation": "Do not collapse practical impact into technical legal labels."
+      "evidence": "Every loaded diff keeps what-changes and what-it-means explanations visible.",
+      "recommendation": "Keep simple explanation separate from original text and source blocks."
     },
     {
-      "id": "source-status-scope",
+      "id": "original-sources-visible",
       "area": "Trust",
       "severity": "critical",
       "pass": true,
-      "evidence": "Source, data status, scope and legal warning are rendered.",
-      "recommendation": "Keep trust metadata visible without requiring a technical view."
-    },
-    {
-      "id": "agenda-source-links",
-      "area": "Trust",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "Agenda metadata and original source link fields are visible in the detail flow.",
-      "recommendation": "Keep agenda/citation/original text source states separate."
-    },
-    {
-      "id": "stable-legal-dates",
-      "area": "Trust",
-      "severity": "major",
-      "pass": true,
-      "evidence": "Legal update dates are formatted without local timezone day drift.",
-      "recommendation": "Keep date-only legal metadata stable across locales."
-    },
-    {
-      "id": "diff-original-sources",
-      "area": "Trust",
-      "severity": "critical",
-      "pass": true,
-      "evidence": "Each diff renders sources for current and proposed versions.",
-      "recommendation": "Every diff must expose both original source states."
+      "evidence": "Proposal and diff views expose agenda, current text and proposed text source states.",
+      "recommendation": "Never hide source state behind interpretation."
     },
     {
       "id": "pending-source-visible",
@@ -130,7 +106,7 @@
       "severity": "critical",
       "pass": true,
       "evidence": "Missing original links are explicit and visible.",
-      "recommendation": "Never hide or invent missing original source links."
+      "recommendation": "Keep pending source states visible instead of inventing links."
     },
     {
       "id": "pending-diff-visible",
@@ -138,7 +114,31 @@
       "severity": "critical",
       "pass": true,
       "evidence": "The UI has an explicit empty state for proposals without loaded legal texts.",
-      "recommendation": "Do not show article-level comparisons until source texts are loaded."
+      "recommendation": "Show pending comparison states transparently and keep source blocks accessible."
+    },
+    {
+      "id": "diff-status-transparency",
+      "area": "Trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "Public proposal cards and diff cards expose validated, partial, assisted and unresolved states.",
+      "recommendation": "Never show an assisted or partial diff as if it were fully validated."
+    },
+    {
+      "id": "real-senate-agenda-items",
+      "area": "Data trust",
+      "severity": "critical",
+      "pass": true,
+      "evidence": "The productive public seed uses official Senate agenda items and no fictional or Diputados data in this vertical slice.",
+      "recommendation": "Keep demo/test data out of the public product."
+    },
+    {
+      "id": "recent-empty-state",
+      "area": "Information architecture",
+      "severity": "major",
+      "pass": true,
+      "evidence": "Already-treated laws have an honest empty state instead of invented data.",
+      "recommendation": "Keep empty states explicit while datasets are incomplete."
     },
     {
       "id": "no-personalized-legal-advice",
@@ -146,30 +146,30 @@
       "severity": "critical",
       "pass": true,
       "evidence": "The interface warns that it is not personalized legal advice.",
-      "recommendation": "Avoid imperative advice for a user's individual situation."
+      "recommendation": "Avoid imperative advice for individual legal situations."
     },
     {
       "id": "accessibility-basics",
       "area": "Accessibility",
       "severity": "major",
       "pass": true,
-      "evidence": "The static page has language, landmarks, hidden labels and one H1.",
-      "recommendation": "Keep labels and document structure explicit as the UI grows."
+      "evidence": "The shell has language, landmarks, hidden labels, focus target and tab states.",
+      "recommendation": "Keep accessible labels and focus management explicit as views grow."
     },
     {
       "id": "brief-how-to-read",
       "area": "Comprehension",
       "severity": "major",
       "pass": true,
-      "evidence": "How-to-read section is brief and uses the four expected concepts.",
-      "recommendation": "Keep the explanation short, visual and useful."
+      "evidence": "How-to-read is a brief visual guide rather than a dense explanation.",
+      "recommendation": "Keep the guide short and focused on reading the interface."
     },
     {
       "id": "responsive-layout",
       "area": "Responsive",
       "severity": "major",
       "pass": true,
-      "evidence": "CSS defines responsive breakpoints and collapses the diff layout.",
+      "evidence": "CSS defines responsive breakpoints, collapses dense grids and accounts for the global search.",
       "recommendation": "Verify real mobile screenshots before production announcements."
     },
     {
@@ -193,8 +193,8 @@
       "area": "Operations",
       "severity": "major",
       "pass": true,
-      "evidence": "A separate operational page can show processor heartbeats and queue status without cluttering the public legal-diff home.",
-      "recommendation": "Keep processor controls out of the public UX; expose only read-only operational state."
+      "evidence": "The operational page remains separate from the public legal-diff UX.",
+      "recommendation": "Keep protected actions token-gated and outside the public reading flow."
     }
   ]
 }

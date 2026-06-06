@@ -8,203 +8,33 @@
   </head>
   <body>
     <header class="top-nav">
-      <a class="brand-link" href="#buscar" aria-label="LexMapa inicio">
+      <a class="brand-link" href="?view=home" data-view="home" aria-label="LexMapa inicio">
         <span class="brand-mark" aria-hidden="true">LM</span>
         <span>LexMapa</span>
       </a>
+
       <nav class="nav-list" aria-label="Navegacion principal">
-        <a href="#cambios-en-debate">Cambios en debate</a>
-        <a href="#cambios-recientes">Cambios recientes</a>
-        <a href="#temas">Temas</a>
-        <a href="#normas">Normas</a>
-        <a href="#buscar">Buscar</a>
+        <a href="?view=home" data-view="home">Inicio</a>
+        <a href="?view=cambios" data-view="cambios">Leyes en tratamiento</a>
+        <a href="?view=temas" data-view="temas">Temas</a>
+        <a href="?view=como-leer" data-view="como-leer">Como leer</a>
+        <a href="?view=fuentes" data-view="fuentes">Fuentes</a>
       </nav>
+
+      <form class="header-search" id="global-search-form" data-search-form>
+        <label class="sr-only" for="global-search-input">Buscar ley, tema o proyecto</label>
+        <input
+          id="global-search-input"
+          name="q"
+          autocomplete="off"
+          maxlength="180"
+          placeholder="Buscar ley, tema o proyecto..."
+        >
+        <button type="submit">Buscar</button>
+      </form>
     </header>
 
-    <main class="workspace">
-      <section class="hero-section" id="buscar">
-        <div class="hero-copy">
-          <p class="eyebrow">Comprension legal simple</p>
-          <h1>Entende que cambia en la ley, sin lenguaje juridico.</h1>
-          <p>
-            No necesitas saber de leyes. Busca que cambio queres entender y LexMapa te muestra que cambia, a quien afecta y donde esta la fuente original.
-          </p>
-        </div>
-
-        <form class="search-form" id="search-form">
-          <label class="sr-only" for="search-input">Buscar una pregunta legal</label>
-          <input
-            id="search-input"
-            name="q"
-            autocomplete="off"
-            placeholder="Ej: Que se trata sobre Ley Hojarasca?"
-            value="hojarasca"
-          >
-          <button type="submit">Buscar</button>
-        </form>
-        <p class="search-note">Busca por tema, reforma, ley o pregunta cotidiana. No necesitas numero de ley, expediente ni articulo.</p>
-      </section>
-
-      <section class="home-section priority-section" id="cambios-en-debate">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Reformas y proyectos</p>
-            <h2>Cambios en debate</h2>
-          </div>
-          <span class="section-note" id="debate-count">0 cargados</span>
-        </div>
-        <div class="proposal-grid" id="debate-list"></div>
-      </section>
-
-      <section class="home-section" id="cambios-recientes">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Aprobados o publicados</p>
-            <h2>Cambios recientes</h2>
-          </div>
-          <span class="section-note">No compite con proyectos en debate</span>
-        </div>
-        <div class="recent-list" id="recent-list"></div>
-      </section>
-
-      <section class="home-section" id="temas">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Entrada por problemas reales</p>
-            <h2>Explorar por tema</h2>
-          </div>
-        </div>
-        <div class="topic-catalog" id="topic-catalog"></div>
-      </section>
-
-      <section class="home-section quiet-section" id="normas">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Referencia</p>
-            <h2>Normas importantes</h2>
-          </div>
-          <span class="section-note">Consulta de base, no flujo principal</span>
-        </div>
-        <div class="norm-list" id="norm-list"></div>
-      </section>
-
-      <section class="home-section how-section" id="como-leer">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Diff legal</p>
-            <h2>Como leer LexMapa</h2>
-          </div>
-        </div>
-        <div class="how-grid">
-          <article>
-            <span>1</span>
-            <strong>Antes</strong>
-            <p>El texto vigente o la situacion actual.</p>
-          </article>
-          <article>
-            <span>2</span>
-            <strong>Despues</strong>
-            <p>El texto propuesto o modificado.</p>
-          </article>
-          <article>
-            <span>3</span>
-            <strong>Que cambia</strong>
-            <p>Lo agregado, eliminado o reemplazado.</p>
-          </article>
-          <article>
-            <span>4</span>
-            <strong>Que significa</strong>
-            <p>Una explicacion simple del impacto practico.</p>
-          </article>
-        </div>
-        <p class="disclaimer">LexMapa ofrece informacion orientativa y comparaciones para facilitar la comprension de cambios legales. No reemplaza asesoramiento legal profesional. Verifica siempre el texto oficial en las fuentes originales.</p>
-      </section>
-
-      <section class="detail-shell" id="detalle">
-        <div class="detail-header">
-          <div>
-            <p class="eyebrow">Detalle de cambio legal</p>
-            <h2 id="detail-title">Cargando propuesta...</h2>
-            <p id="detail-summary"></p>
-          </div>
-          <div class="status-stack">
-            <span class="status-pill" id="detail-status">Estado</span>
-            <span class="status-pill muted" id="detail-type">Tipo</span>
-            <span class="status-pill muted" id="detail-updated">Actualizacion</span>
-          </div>
-        </div>
-
-        <section class="panel search-answer-panel" id="search-answer-panel" hidden>
-          <div class="panel-header">
-            <h3>Respuesta a tu busqueda</h3>
-            <span class="panel-note" id="search-answer-query"></span>
-          </div>
-          <p id="search-answer-text"></p>
-        </section>
-
-        <section class="panel agenda-meta-panel">
-          <div class="panel-header">
-            <h3>Datos de agenda</h3>
-            <span class="panel-note">Fuente oficial</span>
-          </div>
-          <div class="agenda-meta" id="agenda-meta"></div>
-        </section>
-
-        <div class="detail-grid">
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Resumen simple</h3>
-              <span class="panel-note">No tecnico</span>
-            </div>
-            <ul class="plain-list" id="detail-key-points"></ul>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Fuentes originales</h3>
-              <span class="panel-note">Transparencia</span>
-            </div>
-            <div class="source-links" id="proposal-sources"></div>
-          </section>
-        </div>
-
-        <div class="detail-grid">
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Temas afectados</h3>
-              <span class="panel-note" id="topic-count">0 temas</span>
-            </div>
-            <div class="impact-list" id="topics-list"></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Grupos impactados</h3>
-              <span class="panel-note" id="group-count">0 grupos</span>
-            </div>
-            <div class="impact-list" id="groups-list"></div>
-          </section>
-        </div>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h3>Cambios principales</h3>
-            <span class="panel-note" id="diff-count">0 cambios</span>
-          </div>
-          <ol class="main-changes" id="main-changes"></ol>
-        </section>
-
-        <section class="diff-section" id="diffs">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Comparacion articulo por articulo</p>
-              <h2>Texto vigente vs texto propuesto</h2>
-            </div>
-          </div>
-          <div class="diff-list" id="diff-list"></div>
-        </section>
-      </section>
-    </main>
+    <main class="workspace" id="app-root" tabindex="-1"></main>
 
     <script src="./config.js"></script>
     <script type="module" src="./src/app.js"></script>
